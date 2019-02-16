@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
         });
 });
 
-router.post('/', (req, res, next) => {
+router.post('/add', (req, res, next) => {
     Company.findOne({
             name: req.body.company
         })
@@ -212,21 +212,37 @@ router.get('/:employeeId', (req, res, next) => {
 // });
 
 
-router.delete('/:userId', (req, res, next) => {
-    const id = req.params.userId;
-    User.findById({ id: _id })
-        .remove()
+router.get('/delete/:employeeId', (req, res, next) => {
+    const id = req.params.employeeId;
+    console.log('delete dans Dao : ' + id);
+
+    Employee.findByIdAndRemove({ _id: id })
         .exec()
         .then(resultat => {
-            console.log('L\'objet "' + id + '" a été supprimé');
+            const companyId = resultat.company;
+            console.log(companyId);
+            console.log('Suppression du Document');
             res.status(200).json({
                 message: 'L\'objet "' + id + '" a été supprimé'
-            })
+            });
+
+            Company.findById({ _id: companyId })
+                .then(resultat => {
+                    // rechercher l'id dans la table d'employés dans compagnie
+                    console.log(this.id);
+                    resultat.employees.splice(resultat.employees.indexOf(this.id), 1);
+                }
+                )
+                .catch(err => {
+                    res.status(500).json({
+                        error: err
+                    });
+                });
         })
         .catch(err => {
             res.status(500).json({
                 error: err
-            })
+            });
         });
 });
 
@@ -251,7 +267,7 @@ router.delete('/:userId', (req, res, next) => {
 //         });
 // });
 
-router.patch("/:employeeId", (req, res, next) => {
+router.post("/edit/:employeeId", (req, res, next) => {
     var id = req.params.productId;
     // déclaration d'une variable globale pour intégrer les élémnets de la page à mettre à jour
     var updateOps = {};
@@ -267,11 +283,8 @@ router.patch("/:employeeId", (req, res, next) => {
     }
     //$set est un objet de mongoose
     //ceci permet de mettre à jour 1 ou plusieurs éléments de la page
-    employee.update({
-            _id: id
-        }, {
-            $set: updateOps
-        })
+    employee
+        .findOneAndUpdate({ _id: id }, { $set: updateOps })
         .then(result => {
             console.log(result);
             res.status(200).json(result);
