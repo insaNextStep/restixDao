@@ -1,0 +1,25 @@
+{
+  "name": "aventix",
+  "version": "1.0.0",
+  "description": "\"Projet tranversal INSA 2018/2019\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "author": "\"NextStep\"",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "bootstrap": "^4.2.1",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.4.0",
+    "mongoose": "^5.4.3",
+    "mongoose-unique-validator": "^2.0.2",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.18.9",
+    "nunjucks": "^3.1.7",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  }
+}
