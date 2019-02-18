@@ -73,6 +73,26 @@ router.post('/add', (req, res, next) => {
 });
 
 
+router.post('/login', (req, res, next) => {
+    let logData = req.body;
+    // Employee.findOne({'email': logData.email,'companyNumber': logData.companyNumber })
+    Employee.findOne({ 'email': logData.email }, (err, user) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (!user) {
+                res.status(401).send('Invalide User');
+            } else {
+                if (user.password !== logData.password) {
+                    res.status(401).send('Invalide Password');
+                } else {
+                    res.status(200).send(user);
+                }
+            }
+       }
+    });
+});
+
 router.get('/:employeeId', (req, res, next) => {
     var id = req.params.employeeId;
     console.log('id recu : ' + id);
@@ -213,30 +233,23 @@ router.get('/:employeeId', (req, res, next) => {
 
 
 router.get('/dissocierEmploye/:employeeId', (req, res, next) => {
-    const id = req.params.employeeId;
-    Employee.findByIdAndUpdate({
-            _id: id
-        }, {
-            company: null
-        })
+    const employeeId = req.params.employeeId;
+
+    Employee.findById({ _id: employeeId })
+        .populate('company')
         .then(employeeData => {
-            const companyId = employeeData.company;
-            employeeData.company = null;
+            const companyId = employeeData.company._id;
 
-            // res.status(200).json({
-            //     message: 'L\'objet "' + id + '" a été supprimé'
-            // });
-
-            Company.findById({
-                    _id: companyId
-                })
+            Company.findById({_id: companyId})
                 .then(companyData => {
+                    console.log('2e étape');
                     // rechercher l'id dans la table d'employés dans compagnie
-                    console.log(this.id);
-                    companyData.employees.splice(companyData.employees.indexOf(this.id), 1);
+                    console.log('employeeId : ' + employeeId);
+                    companyData.employees.splice(companyData.employees.indexOf(this.employeeId), 1);
                     companyData.save(err => {
                         if (err) return handleError(err);
                     });
+                    console.log('3e étape');
                 })
                 .catch(err => {
                     res.status(500).json({
