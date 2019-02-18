@@ -75,7 +75,7 @@ router.post('/add', (req, res, next) => {
 
 router.get('/:employeeId', (req, res, next) => {
     var id = req.params.employeeId;
-    console.log('id recu : '+ id);
+    console.log('id recu : ' + id);
     Employee.findById({
             _id: id
         })
@@ -212,32 +212,40 @@ router.get('/:employeeId', (req, res, next) => {
 // });
 
 
-router.get('/delete/:employeeId', (req, res, next) => {
+router.get('/dissocierEmploye/:employeeId', (req, res, next) => {
     const id = req.params.employeeId;
-    console.log('delete dans Dao : ' + id);
+    Employee.findByIdAndUpdate({
+            _id: id
+        }, {
+            company: null
+        })
+        .then(employeeData => {
+            const companyId = employeeData.company;
+            employeeData.company = null;
 
-    Employee.findByIdAndRemove({ _id: id })
-        .exec()
-        .then(resultat => {
-            const companyId = resultat.company;
-            console.log(companyId);
-            console.log('Suppression du Document');
-            res.status(200).json({
-                message: 'L\'objet "' + id + '" a été supprimé'
-            });
+            // res.status(200).json({
+            //     message: 'L\'objet "' + id + '" a été supprimé'
+            // });
 
-            Company.findById({ _id: companyId })
-                .then(resultat => {
+            Company.findById({
+                    _id: companyId
+                })
+                .then(companyData => {
                     // rechercher l'id dans la table d'employés dans compagnie
                     console.log(this.id);
-                    resultat.employees.splice(resultat.employees.indexOf(this.id), 1);
-                }
-                )
+                    companyData.employees.splice(companyData.employees.indexOf(this.id), 1);
+                    companyData.save(err => {
+                        if (err) return handleError(err);
+                    });
+                })
                 .catch(err => {
                     res.status(500).json({
                         error: err
                     });
                 });
+            res.status(200).json({
+                message: 'L\'objet "' + id + '" a été supprimé'
+            });
         })
         .catch(err => {
             res.status(500).json({
@@ -247,7 +255,7 @@ router.get('/delete/:employeeId', (req, res, next) => {
 });
 
 // router.delete('/:employeeId', (req, res, next) => {
-    
+
 //     var id = req.params.employeeId;
 //     employee.findById({
 //             _id: id
@@ -284,7 +292,11 @@ router.post("/edit/:employeeId", (req, res, next) => {
     //$set est un objet de mongoose
     //ceci permet de mettre à jour 1 ou plusieurs éléments de la page
     employee
-        .findOneAndUpdate({ _id: id }, { $set: updateOps })
+        .findOneAndUpdate({
+            _id: id
+        }, {
+            $set: updateOps
+        })
         .then(result => {
             console.log(result);
             res.status(200).json(result);
