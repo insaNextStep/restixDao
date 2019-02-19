@@ -2,7 +2,6 @@
   "env": {
     "MONGO_ATLAS_PW": "1tGTd0SBZS1MsyrX",
     "MONGO_ATLAS_USER": "AJCHAHID",
-    "MONGO_ATLAS_URL": "cluster0-anoo3.mongodb.net",
-    "PORT" : "3000"
+    "MONGO_ATLAS_URL": "cluster0-anoo3.mongodb.net"
   }
 }

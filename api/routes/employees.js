@@ -4,33 +4,9 @@ const router = express.Router();
 const Employee = require("../models/employees");
 const Company = require('../models/companies');
 const CreditCard = require('../models/creditCards');
-const jwt = require('jsonwebtoken');
-const secretKey = process.env.MONGO_ATLAS_PW;
+var jwt = require('jsonwebtoken');
 
-function checkToken(req, res, next){
-    const ticket = req.headers.authorization;
-    // controle de la présence d'une authorisation dans le headers
-    if (!ticket){
-        return res.status(401).send('Unauthorized request 1')
-    }
-    // controle que le token n'est pas null (vide)
-    const token = ticket.split(' ')[1];
-    if (token===null){
-        return res.status(401).send('Unauthorized request 2')
-    }
-    // controle que le token + cle est OK
-    const payload = jwt.verify(token, secretKey);
-    console.log('payload : ' + payload);
-    if(!payload){
-        return res.status(401).send('Unauthorized request 3')
-    }
-
-    // retourne les valeurs de l'id l'utilisateur
-    req.employeeId = payload.subject;
-    next();
-}
-
-router.get('/', checkToken, (req, res, next) => {
+router.get('/', (req, res, next) => {
     Employee.find({})
         .populate('company')
         .populate('creditCard')
@@ -100,7 +76,7 @@ router.post('/login', (req, res, next) => {
     const logData = req.body;
     // Employee.findOne({'email': logData.email,'companyNumber': logData.companyNumber })
     Employee.findOne({
-        'email': logData.email.toLowerCase()
+        'email': logData.email
     }, (err, user) => {
         if (err) {
             console.log(err);
@@ -112,7 +88,7 @@ router.post('/login', (req, res, next) => {
                     res.status(401).send('Invalide Password');
                 } else {
                     let payload = { subject : user._id};
-                    let token = jwt.sign(payload, secretKey); // la clé peut être ce qu'on veut
+                    let token = jwt.sign(payload,'secreteKey'); // la clé peut être ce qu'on veut
                     res.status(200).send({token});
                 }
             }
@@ -138,7 +114,7 @@ router.post('/register', (req, res, next) => {
                         console.log(error);
                     } else {
                         let payload = { subject : registeredData._id};
-                        let token = jwt.sign(payload, secretKey); // la clé peut être ce qu'on veut
+                        let token = jwt.sign(payload,'secreteKey'); // la clé peut être ce qu'on veut
                         res.status(200).send({token});
                     }
                 })
