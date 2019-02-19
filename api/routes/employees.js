@@ -72,11 +72,12 @@ router.post('/add', (req, res, next) => {
         });
 });
 
-
 router.post('/login', (req, res, next) => {
-    let logData = req.body;
+    const logData = req.body;
     // Employee.findOne({'email': logData.email,'companyNumber': logData.companyNumber })
-    Employee.findOne({ 'email': logData.email }, (err, user) => {
+    Employee.findOne({
+        'email': logData.email
+    }, (err, user) => {
         if (err) {
             console.log(err);
         } else {
@@ -86,12 +87,44 @@ router.post('/login', (req, res, next) => {
                 if (user.password !== logData.password) {
                     res.status(401).send('Invalide Password');
                 } else {
-                    res.status(200).send(user);
+                    let payload = { subject : user._id};
+                    let token = jwt.sign(payload,'secreteKey'); // la clé peut être ce qu'on veut
+                    res.status(200).send({token});
                 }
             }
-       }
+        }
     });
 });
+
+
+router.post('/register', (req, res, next) => {
+    const dataBody = req.body;
+    const dataToRegister = new Employee(dataBody);
+    // Employee.findOne({'email': logData.email,'companyNumber': logData.companyNumber })
+    Employee.findOne({
+        'email': dataToRegister.email
+    }, (err, user) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (!user) {
+                dataToRegister.statusCompte = 'Activé';
+                dataToRegister.save((error, registeredData) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        let payload = { subject : registeredData._id};
+                        let token = jwt.sign(payload,'secreteKey'); // la clé peut être ce qu'on veut
+                        res.status(200).send({token});
+                    }
+                })
+            } else {
+                res.status(401).send('Vous êtes déjà enregistré avec cette adresse mail');
+            }
+        }
+    });
+});
+
 
 router.get('/:employeeId', (req, res, next) => {
     var id = req.params.employeeId;
@@ -235,12 +268,16 @@ router.get('/:employeeId', (req, res, next) => {
 router.get('/dissocierEmploye/:employeeId', (req, res, next) => {
     const employeeId = req.params.employeeId;
 
-    Employee.findById({ _id: employeeId })
+    Employee.findById({
+            _id: employeeId
+        })
         .populate('company')
         .then(employeeData => {
             const companyId = employeeData.company._id;
 
-            Company.findById({_id: companyId})
+            Company.findById({
+                    _id: companyId
+                })
                 .then(companyData => {
                     console.log('2e étape');
                     // rechercher l'id dans la table d'employés dans compagnie
