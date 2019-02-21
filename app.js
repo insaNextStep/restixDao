@@ -2,6 +2,7 @@ const express = require('express');
 // const morgan = require('morgan');
 const bodyParser = require('body-parser'); //analyseur de corps
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 // const nunjucks = require('nunjucks'); // moteur de template
 
 
@@ -38,7 +39,7 @@ app.use((req, res, next) => {
 
 // initialisation des routes
 //1er argurment indique le chemin URL /  le second indique le fichier js � utilis� ./api/routes.products.js
-app.use('/employees', employeesRoutes);
+app.use('/list-employees', employeesRoutes);
 app.use('/chopHouses', chopHouseRoutes);
 app.use('/companies', companyRoutes);
 app.use('/creditcards', creditCardRoutes);

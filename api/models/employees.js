@@ -12,14 +12,18 @@ const employeeSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        default:'INSA2019'
+        default:'a'
     },
     creditCard: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CreditCard',
         default: undefined
     },
-
+    role: {
+        type: String,
+        required: true,
+        default:'EMPLOYE'
+    },
 });
 
 

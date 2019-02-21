@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const jwt = require('jsonwebtoken'); 
 // var mongoose = require("mongoose");
 const Employee = require("../models/employees");
 const Company = require('../models/companies');
 const CreditCard = require('../models/creditCards');
-var jwt = require('jsonwebtoken');
 
-router.get('/', (req, res, next) => {
+
+router.get('/list', (req, res, next) => {
     Employee.find({})
         .populate('company')
         .populate('creditCard')
@@ -22,6 +23,8 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/add', (req, res, next) => {
+    console.log(req.body);
+    console.log(req.body.company);
     Company.findOne({
             name: req.body.company
         })
@@ -87,9 +90,10 @@ router.post('/login', (req, res, next) => {
                 if (user.password !== logData.password) {
                     res.status(401).send('Invalide Password');
                 } else {
-                    let payload = { subject : user._id};
-                    let token = jwt.sign(payload,'secreteKey'); // la clé peut être ce qu'on veut
-                    res.status(200).send({token});
+                    const payload = { subject : user._id};
+                    const role = user.role;
+                    const token = jwt.sign(payload,'secreteKey'); // la clé peut être ce qu'on veut
+                    res.status(200).send({token, role});
                 }
             }
         }
@@ -97,7 +101,7 @@ router.post('/login', (req, res, next) => {
 });
 
 
-router.post('/register', (req, res, next) => {
+router.post('/add-employe', (req, res, next) => {
     const dataBody = req.body;
     const dataToRegister = new Employee(dataBody);
     // Employee.findOne({'email': logData.email,'companyNumber': logData.companyNumber })
@@ -168,10 +172,10 @@ router.get('/:employeeId', (req, res, next) => {
 //         .limit(5)
 //         .select()
 //         .exec()
-//         .then(employees => {
+//         .then(list-employees => {
 //             var reponse = {
-//                 "Nombre de client": employees.length,
-//                 Utilisateur: employees.map(employee => {
+//                 "Nombre de client": list-employees.length,
+//                 Utilisateur: list-employees.map(employee => {
 //                     return {
 //                         name: employee.name,
 //                         lastName: employee.lastName,
@@ -179,6 +183,7 @@ router.get('/:employeeId', (req, res, next) => {
 //                         eMail: employee.eMail,
 //                         passWord: employee.passWord,
 //                         numberStreet: employee.numberStreet,
+//                         typeStreet: employee.typeStreet
 //                         street: employee.street,
 //                         codePostal: employee.codePostal,
 //                         city: employee.city,
