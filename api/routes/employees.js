@@ -130,7 +130,46 @@ router.post('/add-employe', (req, res, next) => {
 });
 
 
-router.get('/:employeeId', (req, res, next) => {
+
+
+router.get('/email/:email', (req, res, next) => {
+    var email = req.params.email;
+    console.log('email recu : ');
+    console.log(email);
+    Employee.findOne({
+        email: email
+        })
+        .then(employeeDate => {
+            console.log(employeeDate['email']);
+            // var utilisateur = {
+            //     name: employeeDate.name,
+            //     lastName: employeeDate.lastName,
+            //     phone: employeeDate.phone,
+            //     eMail: employeeDate.eMail,
+            //     passWord: employeeDate.passWord,
+            //     numberStreet: employeeDate.numberStreet,
+            //     street: employeeDate.street,
+            //     codePostal: employeeDate.codePostal,
+            //     city: employeeDate.city,
+            //     creditCardNum: employeeDate.creditCardNum,
+            //     companyNum: employeeDate.companyNum,
+            //     solde: employeeDate.solde,
+            //     dailyUse: employeeDate.dailyUse,
+            //     Activation: employeeDate.Activation
+            // };
+            // console.log(utilisateur);
+            res.status(200).json(employeeDate['email']);
+        })
+        .catch(err => {
+            console.log('error : ' + err);
+            res.status(500).json({
+                error: err
+            });
+        });
+});
+
+
+router.get('/edit/:employeeId', (req, res, next) => {
     var id = req.params.employeeId;
     console.log('id recu : ' + id);
     Employee.findById({

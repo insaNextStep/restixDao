@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 
-const chopHouseSchema = new mongoose.Schema({
+const commercantSchema = new mongoose.Schema({
     name: String,
     phone: Number,
     email: String,
-    employees: String
 });
 //définition du modèle
 // const chopHouseSchema = new mongoose.Schema({
@@ -27,4 +26,4 @@ const chopHouseSchema = new mongoose.Schema({
 // });
 
 //exportation du modèle
-module.exports = mongoose.model('ChopHouse', chopHouseSchema);
+module.exports = mongoose.model('Commercant', commercantSchema);
