@@ -33,10 +33,10 @@ app.use((req, res, next) => {
         "Origin, X-Requested-With, Content-Type, Accept, Authorization"
     );
     
-    // if (req.method === 'OPTION') {
-    //     res.header('Access-Control-Allow-Method', 'POST, GET, PATCH, DELETE');
-    //     return res.status(200).json({});
-    // }
+    if (req.method === 'OPTION') {
+        res.header('Access-Control-Allow-Method', 'POST, GET, PATCH, DELETE');
+        return res.status(200).json({});
+    }
     next();
 });
 
@@ -58,7 +58,7 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
     // reprise de tout les erreur sauf le code erreur 404 défini au dessus.
     // tous les autres erreur son changer en code 500
-    res.status(error.status || 500)
+    res.status(error.status || 500);
     res.json({
         // indication du message que nous voulons....
         error: {

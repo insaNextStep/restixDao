@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-
 const Commercant = require('../models/commercants');
 
 
@@ -75,12 +74,12 @@ router.get('/:commercantId', (req, res, next) => {
             //     codeEntreprise: commercantData.codeEntreprise
             // }
             // console.log(commercantData);
-            res.status(200).json(commercantData)
+            res.status(200).json(commercantData);
         })
         .catch(err => {
             res.status(500).json({
                 error: err
-            })
+            });
         });
 });
 
@@ -94,42 +93,28 @@ router.delete('/delete/:commercantId', (req, res, next) => {
             console.log('L\'objet "' + id + '" a été supprimé');
             res.status(200).json({
                 message: 'L\'objet "' + id + '" a été supprimé'
-            })
+            });
         })
         .catch(err => {
             res.status(500).json({
                 error: err
-            })
+            });
         });
 });
 
-router.patch('/update/:commercantId', (req, res, next) => {
+router.put('/update/:commercantId', (req, res, next) => {
     const id = req.params.commercantId;
-    console.log(req.body)
+    console.log('mise à jour données');
     // // déclaration d'une variable globale pour intégrer les élémnets de la page à mettre à jour
     var updateOps = req.body;
-    // //boucle sur l'ensemble des éléments de la page du formulaire de mise à jour
-    // for (var ops of req.body) {
-    //     //on récupère un tableau de donnée poster sur la page web
-    //     updateOps[ops.propName] = ops.value;
-    //     /*tableau de valeur, avec un contenu au format json
-    //         [
-    //             {"propName":"name", "value":"un string"},
-    //             {"propName":"price", "value":"15"}
-    //         ]*/
-    // }
-    // console.log(updateOps);
-    //$set est un objet de mongoose
-    //ceci permet de mettre à jour 1 ou plusieurs éléments de la page
     Commercant
         .findOneAndUpdate({
             _id: id
         }, {
             $set: updateOps
         })
-        .exec()
+        .update()
         .then(result => {
-            console.log(updateOps);
             console.log(result);
             res.status(200).json(result);
         })

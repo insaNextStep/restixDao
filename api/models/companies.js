@@ -84,7 +84,7 @@ module.exports = mongoose.model('Company', companySchema);
 //         type: mongoose.Schema.Types.ObjectId,
 //         ref: 'CreditCard'
 //     }],
-//     list-list-employees: [{
+//     list-employees: [{
 //         type: mongoose.Schema.Types.ObjectId,
 //         ref: 'User'
 //     }]

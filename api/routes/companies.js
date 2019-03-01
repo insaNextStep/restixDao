@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Company = require('../models/companies');
 
-router.get('/', (req, res, next) => {
+router.get('/list', (req, res, next) => {
     Company.find({})
         .populate('employees')
         .populate('creditCards')
@@ -39,27 +39,7 @@ router.get('/:companyId', (req, res, next) => {
         });
 });
 
-
-router.get('/name/:companyId', (req, res, next) => {
-    const id = req.params.companyId;
-    Company.findById({
-            _id: id
-        })
-        .populate('employees')
-        .populate('creditCards')
-        .exec()
-        .then(companyName => {
-            console.log({company : companyName.name});
-            res.status(200).json({company : companyName.name});
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: err
-            });
-        });
-});
-
-router.post('/', (req, res, next) => {
+router.post('/add', (req, res, next) => {
     var companyData = new Company({
         name: req.body.name,
         phone: req.body.phone,
@@ -81,7 +61,7 @@ router.post('/', (req, res, next) => {
 
 // router.get('/', (req, res, next) => {
 //     Company.find()
-//         .populate(list-list-employees)
+//         .populate(list-employees)
 //         .populate(creditCardNum)
 //         .select('_id eMail nom prenom codeEntreprise')
 //         .exec()
@@ -105,7 +85,7 @@ router.post('/', (req, res, next) => {
 //                         phone: company.phone,
 //                         eMail: company.eMail,
 //                         creditCardNum: company.creditCardNum,
-//                         list-list-employees: company.list-list-employees,
+//                         list-employees: company.list-employees,
 //                         url: 'http://localhost:3000/companies/' + company._id
 //                     };
 //                 })
@@ -140,7 +120,7 @@ router.post('/', (req, res, next) => {
 //         phone: req.body.phone,
 //         eMail:req.body.eMail,
 //         creditCardNum: req.body.creditCardNum,
-//         list-list-employees: req.body.list-list-employees
+//         list-employees: req.body.list-employees
 //     });
 //     console.log(req.body);
 //     companyData.save()
@@ -157,7 +137,7 @@ router.post('/', (req, res, next) => {
 
 
 
-router.delete('/:companyId', (req, res, next) => {
+router.delete('/delete/:companyId', (req, res, next) => {
     const id = req.params.companyId;
 
     Company.findByIdAndDelete({
@@ -165,7 +145,7 @@ router.delete('/:companyId', (req, res, next) => {
         })
         .then(resultat => {
             // possibilité de récuperer les employer et les carte.
-            console.log('L\'objet "' + id + '" a été supprimé');
+             console.log('L\'objet "' + id + '" a été supprimé');
             res.status(200).json({
                 message: 'L\'objet "' + id + '" a été supprimé'
             });
@@ -178,7 +158,7 @@ router.delete('/:companyId', (req, res, next) => {
         });
 });
 
-router.patch('/:companyId', (req, res, next) => {
+router.patch('/update/:companyId', (req, res, next) => {
     const id = req.params.companyId;
     // déclaration d'une variable globale pour intégrer les élémnets de la page à mettre à jour
     const updateOps = {};
@@ -194,12 +174,8 @@ router.patch('/:companyId', (req, res, next) => {
     }
     //$set est un objet de mongoose
     //ceci permet de mettre à jour 1 ou plusieurs éléments de la page
-    Company.findById({
-            _id: id
-        })
-        .update({
-            $set: updateOps
-        })
+    Company.findById({ _id: id })
+        .update({ $set: updateOps })
         .then(result => {
             console.log(result);
             res.status(200).json(result);

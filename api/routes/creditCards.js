@@ -57,6 +57,9 @@ router.post('/', (req, res, next) => {
             var creditCardData = new CreditCard({
                 number: req.body.number,
             });
+
+
+            
             creditCardData
                 .save()
                 .then(resultat => {
@@ -109,9 +112,9 @@ router.post('/', (req, res, next) => {
 //         .limit(5)
 //         .select()
 //         .exec()
-//         .then(list-list-employees => {
+//         .then(list-employees => {
 //             var reponse = {
-//                 "Nombre de carte": list-list-employees.length,
+//                 "Nombre de carte": list-employees.length,
 //                 Utilisateur: creditcard.map(card => {
 //                     return {
 //                         number: card.name,
