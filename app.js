@@ -4,6 +4,9 @@ const bodyParser = require('body-parser'); //analyseur de corps
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const MONGO_ATLAS_PW = "1tGTd0SBZS1MsyrX";
+const MONGO_ATLAS_USER = "AJCHAHID";
+const MONGO_ATLAS_URL = "cluster0-anoo3.mongodb.net";
 // const nunjucks = require('nunjucks'); // moteur de template
 
 
@@ -17,7 +20,7 @@ const app = express(); // astentiation d'une nouvelle application express
 app.use(cors());
 // app.use(morgan('dev'));
 //initialisation de la connexion à la base de données
-const mongoDB = "mongodb+srv://" + process.env.MONGO_ATLAS_USER + ":" + process.env.MONGO_ATLAS_PW + "@cluster0-anoo3.mongodb.net/projetTransversal?retryWrites=true";
+const mongoDB = "mongodb+srv://" + MONGO_ATLAS_USER + ":" + MONGO_ATLAS_PW + "@cluster0-anoo3.mongodb.net/projetTransversal?retryWrites=true";
 mongoose.connect(mongoDB, {useNewUrlParser: true});
 
 //analyse des données mais en mode non étendu (réduction de l'analyse)
