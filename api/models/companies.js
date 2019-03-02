@@ -2,9 +2,24 @@ const mongoose = require('mongoose');
 // const mongooseUniqueValidator = require('mongoose-unique-validator');
 
 const companySchema = new mongoose.Schema({
-    name: String,
-    phone: Number,
-    email: String,
+    name: {
+        type: String,
+        required: true,
+    },
+    phone: {
+        type: Number,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true,
+        default:'insa'
+    },
     employees: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employee'
@@ -12,7 +27,13 @@ const companySchema = new mongoose.Schema({
     creditCards: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CreditCard'
-    }]
+    }],
+    role: {
+        type: String,
+        required: true,
+        default:'ENTREPRISE'
+    },
+
 });
 
 //exportation du modèle

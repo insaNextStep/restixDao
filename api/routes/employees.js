@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 // var mongoose = require("mongoose");
 const Employee = require("../models/employees");
-const Company = require('../models/companies');
-const CreditCard = require('../models/creditCards');
-var jwt = require('jsonwebtoken');
+const Company = require("../models/companies");
+const CreditCard = require("../models/creditCards");
 
-router.get('/list', (req, res, next) => {
+router.get("/list", (req, res, next) => {
     Employee.find({})
-        .populate('company')
-        .populate('creditCard')
+        .populate("company")
+        .populate("creditCard")
         .then(resultat => {
             res.status(200).json(resultat);
         })
@@ -21,11 +21,13 @@ router.get('/list', (req, res, next) => {
         });
 });
 
-router.post('/add/', (req, res, next) => {
+router.post("/add", (req, res, next) => {
+    console.log(req.body);
+    console.log(req.body.company);
     Company.findOne({
-            name: req.body.company
-        })
-        .populate('creditCards')
+        name: req.body.company
+    })
+        .populate("creditCards")
         .then(company => {
             // intialise le nouveau employé
             var employeeData = new Employee({
@@ -39,17 +41,21 @@ router.post('/add/', (req, res, next) => {
             var findCard = 0;
             company.creditCards.forEach(card => {
                 console.log(card.status);
-                if (card.status === 'NEW' && findCard === 0) {
+                if (card.status === "NEW" && findCard === 0) {
                     // mise à jour de l'état de la CB
                     findCard = 1;
                     employeeData.creditCard = card._id;
-                    CreditCard.findOneAndUpdate({
-                        _id: card._id
-                    }, {
-                        status: 'AFFECT'
-                    }, err => {
-                        if (err) return handleError(err);
-                    });
+                    CreditCard.findOneAndUpdate(
+                        {
+                            _id: card._id
+                        },
+                        {
+                            status: "AFFECT"
+                        },
+                        err => {
+                            if (err) return handleError(err);
+                        }
+                    );
                 }
             });
             // sauvegard de l'employé
@@ -72,14 +78,89 @@ router.post('/add/', (req, res, next) => {
         });
 });
 
-
-router.get('/:employeeId', (req, res, next) => {
-    var id = req.params.employeeId;
-    console.log('id recu : '+ id);
-    Employee.findById({
-            _id: id
+router.get('/email/:refEmail', (req, res, next) => {
+    const email = req.params.refEmail.toLowerCase();
+    console.log('node email : ' + email);
+    Employee.findOne({
+            email: email
+        }).exec()
+        .then(data => {
+            console.log(data);
+            res.status(200).json({message: 'err'});
         })
-        .populate('companyId')
+        .catch(err => {
+            console.log('nouveau login');
+            res.status(200).json({message: 'new'});
+        });
+});
+
+router.post("/login", (req, res, next) => {
+    const logData = req.body;
+    console.log("login zone");
+    console.log(req.body);
+    // Employee.findOne({'email': logData.email,'companyNumber': logData.companyNumber })
+    Employee.findOne({
+        email: logData.email
+    })
+        .then(user => {
+            const data = user;
+            console.log(data);
+            console.log('user ' + data.password);
+            if (data.password !== logData.password) {
+                res.status(500).send("Invalide Password");
+            } else {
+                const payload = { subject: user._id };
+                const role = user.role;
+                const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                res.status(200).send({ token, role });
+            }
+        })
+        .catch(err => {
+            console.log("invalide user : " + err);
+            res.status(500).send("Invalide User : " + err);
+        });
+});
+
+router.post("/add-employe", (req, res, next) => {
+    const dataBody = req.body;
+    const dataToRegister = new Employee(dataBody);
+    // Employee.findOne({'email': logData.email,'companyNumber': logData.companyNumber })
+    Employee.findOne(
+        {
+            email: dataToRegister.email
+        },
+        (err, user) => {
+            if (err) {
+                console.log(err);
+            } else {
+                if (!user) {
+                    dataToRegister.statusCompte = "Activé";
+                    dataToRegister.save((error, registeredData) => {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            let payload = { subject: registeredData._id };
+                            let token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                            res.status(200).send({ token });
+                        }
+                    });
+                } else {
+                    res.status(401).send(
+                        "Vous êtes déjà enregistré avec cette adresse mail"
+                    );
+                }
+            }
+        }
+    );
+});
+
+router.get("/:employeeId", (req, res, next) => {
+    var id = req.params.employeeId;
+    console.log("id recu : " + id);
+    Employee.findById({
+        _id: id
+    })
+        .populate("companyId")
         .exec()
         .then(employeeDate => {
             console.log(employeeDate);
@@ -115,10 +196,10 @@ router.get('/:employeeId', (req, res, next) => {
 //         .limit(5)
 //         .select()
 //         .exec()
-//         .then(employees => {
+//         .then(list-employees => {
 //             var reponse = {
-//                 "Nombre de client": employees.length,
-//                 Utilisateur: employees.map(employee => {
+//                 "Nombre de client": list-employees.length,
+//                 Utilisateur: list-employees.map(employee => {
 //                     return {
 //                         name: employee.name,
 //                         lastName: employee.lastName,
@@ -126,6 +207,7 @@ router.get('/:employeeId', (req, res, next) => {
 //                         eMail: employee.eMail,
 //                         passWord: employee.passWord,
 //                         numberStreet: employee.numberStreet,
+//                         typeStreet: employee.typeStreet
 //                         street: employee.street,
 //                         codePostal: employee.codePostal,
 //                         city: employee.city,
@@ -211,16 +293,39 @@ router.get('/:employeeId', (req, res, next) => {
 //         });
 // });
 
+router.get("/dissocierEmploye/:employeeId", (req, res, next) => {
+    const employeeId = req.params.employeeId;
 
-router.delete('/:userId', (req, res, next) => {
-    const id = req.params.userId;
-    User.findById({ id: _id })
-        .remove()
-        .exec()
-        .then(resultat => {
-            console.log('L\'objet "' + id + '" a été supprimé');
+    Employee.findById({
+        _id: employeeId
+    })
+        .populate("company")
+        .then(employeeData => {
+            const companyId = employeeData.company._id;
+
+            Company.findById({
+                _id: companyId
+            })
+                .then(companyData => {
+                    console.log("2e étape");
+                    // rechercher l'id dans la table d'employés dans compagnie
+                    console.log("employeeId : " + employeeId);
+                    companyData.employees.splice(
+                        companyData.employees.indexOf(this.employeeId),
+                        1
+                    );
+                    companyData.save(err => {
+                        if (err) return handleError(err);
+                    });
+                    console.log("3e étape");
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        error: err
+                    });
+                });
             res.status(200).json({
-                message: 'L\'objet "' + id + '" a été supprimé'
+                message: "L'objet \"" + id + '" a été supprimé'
             });
         })
         .catch(err => {
@@ -231,7 +336,7 @@ router.delete('/:userId', (req, res, next) => {
 });
 
 // router.delete('/:employeeId', (req, res, next) => {
-    
+
 //     var id = req.params.employeeId;
 //     employee.findById({
 //             _id: id
@@ -251,7 +356,7 @@ router.delete('/:userId', (req, res, next) => {
 //         });
 // });
 
-router.patch("/:employeeId", (req, res, next) => {
+router.post("/edit/:employeeId", (req, res, next) => {
     var id = req.params.productId;
     // déclaration d'une variable globale pour intégrer les élémnets de la page à mettre à jour
     var updateOps = {};
@@ -267,11 +372,15 @@ router.patch("/:employeeId", (req, res, next) => {
     }
     //$set est un objet de mongoose
     //ceci permet de mettre à jour 1 ou plusieurs éléments de la page
-    employee.update({
-            _id: id
-        }, {
-            $set: updateOps
-        })
+    employee
+        .findOneAndUpdate(
+            {
+                _id: id
+            },
+            {
+                $set: updateOps
+            }
+        )
         .then(result => {
             console.log(result);
             res.status(200).json(result);

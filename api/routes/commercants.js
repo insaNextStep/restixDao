@@ -61,6 +61,20 @@ router.post('/add', (req, res, next) => {
         });
 });
 
+router.get('/email/:refEmail', (req, res, next) => {
+    const email = req.params.refEmail;
+    Commercant.findOne({
+            email: email
+        }).exec()
+        .then(commercantData => {
+            console.log(commercantData.email);
+            res.status(200).json({});
+        })
+        .catch(err => {
+            res.status(500).json({message: 'new'});
+        });
+});
+
 router.get('/:commercantId', (req, res, next) => {
     const id = req.params.commercantId;
     Commercant.findById({

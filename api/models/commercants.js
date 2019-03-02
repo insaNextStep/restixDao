@@ -1,9 +1,24 @@
 const mongoose = require('mongoose');
 
 const commercantSchema = new mongoose.Schema({
-    name: String,
-    phone: Number,
-    email: String,
+    name: {
+        type: String,
+        required: true,
+    },
+    phone: {
+        type: Number,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    role: {
+        type: String,
+        required: true,
+        default:'COMMERCANT'
+    }
 });
 //définition du modèle
 // const chopHouseSchema = new mongoose.Schema({

@@ -135,7 +135,21 @@ router.post('/add', (req, res, next) => {
 //         });
 // });
 
-
+router.get('/email/:refEmail', (req, res, next) => {
+    const email = req.params.refEmail.toLowerCase();
+    console.log('node email : ' + email);
+    Company.findOne({
+            email: email
+        }).exec()
+        .then(data => {
+            console.log(data);
+            res.status(200).json({message: 'err'});
+        })
+        .catch(err => {
+            console.log('nouveau login');
+            res.status(200).json({message: 'new'});
+        });
+});
 
 router.delete('/delete/:companyId', (req, res, next) => {
     const id = req.params.companyId;
