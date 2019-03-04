@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<H1 style="text-align: center">Liste des transactions</H1>
+
+<div class="container" style="max-width : 30%;">
+
+                        {% for item in listTpe %}
+                        <option> {{item.nomCommercant}} - {{item.tpe}}</option>
+                        {% endfor %}
+ 
+</div>
+
+{% endblock %}

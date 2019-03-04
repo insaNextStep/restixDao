@@ -1,12 +1,24 @@
 const mongoose = require('mongoose');
 // const mongooseUniqueValidator = require('mongoose-unique-validator');
+var schemaOptions = {
+    toObject: {
+      virtuals: true
+    }
+    ,toJSON: {
+      virtuals: true
+    }
+  };
 
-const employeeSchema = new mongoose.Schema({
-    name: {
+const employeSchema = new mongoose.Schema({
+    nom: {
         type: String,
         required: true,
     },
-    phone: {
+    prenom: {
+        type: String,
+        required: true,
+    },
+    tel: {
         type: Number,
         required: true
     },
@@ -36,27 +48,17 @@ const employeeSchema = new mongoose.Schema({
         default: 'NEW',
         required: true
     }
-});
+}, schemaOptions);
 
-
-// company: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: 'Company',
-//     default: undefined
-// },
-
-employeeSchema.virtual('company', {
-    ref: 'Company',
+employeSchema.virtual('entreprise', {
+    ref: 'Entreprise',
     localField: '_id',
-    foreignField: 'employees',
+    foreignField: 'employes',
     justOne: true,
 });
 
-// creditCardSchema.set('toObject', {
+// employeSchema.set('toJSON', {
 //     virtuals: true
 // });
-employeeSchema.set('toJSON', {
-    virtuals: true
-});
 
-module.exports = mongoose.model('Employee', employeeSchema);
+module.exports = mongoose.model('Employe', employeSchema);

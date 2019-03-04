@@ -7,21 +7,30 @@ const cors = require('cors');
 const MONGO_ATLAS_PW = "1tGTd0SBZS1MsyrX";
 const MONGO_ATLAS_USER = "AJCHAHID";
 const MONGO_ATLAS_URL = "cluster0-anoo3.mongodb.net";
+
+const nunjucks = require('nunjucks');
 // const nunjucks = require('nunjucks'); // moteur de template
 
-
-const employeRoutes = require('./api/routes/employees');
+// const indexRoutes = require('./api/routes/index');
+const employeRoutes = require('./api/routes/employes');
 const commercantRoutes = require('./api/routes/commercants');
-const companyRoutes = require('./api/routes/companies');
+const entrepriseRoutes = require('./api/routes/entreprises');
 const creditCardRoutes = require('./api/routes/creditcards');
-const transactionRoutes = require('./api/routes/transactions');
+// const transactionRoutes = require('./api/routes/transactions');
 
-const app = express(); // astentiation d'une nouvelle application express
-app.use(cors());
-// app.use(morgan('dev'));
 //initialisation de la connexion à la base de données
 const mongoDB = "mongodb+srv://" + MONGO_ATLAS_USER + ":" + MONGO_ATLAS_PW + "@cluster0-anoo3.mongodb.net/projetTransversal?retryWrites=true";
+// Get Mongoose to use the global promise library
+// mongoose.Promise = global.Promise;
+
 mongoose.connect(mongoDB, {useNewUrlParser: true});
+
+
+const app = express(); // astentiation d'une nouvelle application express
+
+app.use(cors());
+// app.use(morgan('dev')) ;
+
 
 //analyse des données mais en mode non étendu (réduction de l'analyse)
 app.use(bodyParser.urlencoded({extended: false}));
@@ -43,11 +52,14 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+
 // initialisation des routes
 //1er argurment indique le chemin URL /  le second indique le fichier js à utilisé ./api/routes.products.js
-app.use('/employees', employeRoutes);
+app.use('/transactions', require('./api/routes/transactions'));
+app.use('/employes', employeRoutes);
 app.use('/commercants', commercantRoutes);
-app.use('/companies', companyRoutes);
+app.use('/entreprises', entrepriseRoutes);
 app.use('/credit-cards', creditCardRoutes);
 // app.use('/transaction', transactionRoutes);
 
@@ -69,5 +81,12 @@ app.use((error, req, res, next) => {
         }
     });
 });
+
+nunjucks.configure('./api/views', {
+    autoescape: true,
+    express: app
+});
+
+console.log('Transaction API lancée');
 
 module.exports = app;

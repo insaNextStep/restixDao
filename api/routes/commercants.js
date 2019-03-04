@@ -33,9 +33,8 @@ router.get('/list', (req, res, next) => {
 router.post('/add', (req, res, next) => {
     const commercantData = new Commercant({
         _id: new mongoose.Types.ObjectId(),
-        // chopHouseName: req.body.chopHouseName,
-        //         Iban: req.body.Iban,
-        //         siret: req.body.siret,
+        ibanCommercant: req.body.ibanCommercant,
+                siretCommercant: req.body.siretCommercant,
         //         number: req.body.number,
         //         password: req.body.password,
         //         numberStreet: req.body.numberStreet,
@@ -43,11 +42,11 @@ router.post('/add', (req, res, next) => {
         //         commune: req.body.commune,
         //         codePostal: req.body.codePostal,
         //         city: req.body.city,
-        name: req.body.name,
+        nomCommercant: req.body.nomCommercant,
         //         lastName:req.body.lastName,
-        phone: req.body.phone,
+        tel: req.body.tel,
         email: req.body.email,
-        //         TPE: req.body.TPE
+                tpe: req.body.tpe
     });
     commercantData.save()
         .then(resultat => {
@@ -62,16 +61,22 @@ router.post('/add', (req, res, next) => {
 });
 
 router.get('/email/:refEmail', (req, res, next) => {
-    const email = req.params.refEmail;
+    const email = req.params.refEmail.toLowerCase();
+    console.log('node email : ' + email);
     Commercant.findOne({
             email: email
         }).exec()
-        .then(commercantData => {
-            console.log(commercantData.email);
-            res.status(200).json({});
+        .then(data => {
+            console.log('exite déjà : ' + data.email);
+            res.status(200).json({
+                message: 'err'
+            });
         })
         .catch(err => {
-            res.status(500).json({message: 'new'});
+            console.log('nouveau login');
+            res.status(200).json({
+                message: 'new'
+            });
         });
 });
 
@@ -116,7 +121,7 @@ router.delete('/delete/:commercantId', (req, res, next) => {
         });
 });
 
-router.put('/update/:commercantId', (req, res, next) => {
+router.patch('/update/:commercantId', (req, res, next) => {
     const id = req.params.commercantId;
     console.log('mise à jour données');
     // // déclaration d'une variable globale pour intégrer les élémnets de la page à mettre à jour

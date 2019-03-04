@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 // const mongooseUniqueValidator = require('mongoose-unique-validator');
 
-const companySchema = new mongoose.Schema({
-    name: {
+const entrepriseSchema = new mongoose.Schema({
+    nomEntreprise: {
         type: String,
         required: true,
     },
-    phone: {
+    tel: {
         type: Number,
         required: true
     },
@@ -15,14 +15,22 @@ const companySchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    ibanEntreprise:{
+        type: String,
+        required: true
+    },
+    numSiret:{
+        type: Number,
+        required: true
+    },
     password: {
         type: String,
         required: true,
-        default:'insa'
+        default: 'insa'
     },
-    employees: [{
+    employes: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Employee'
+        ref: 'Employe'
     }],
     creditCards: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -31,83 +39,71 @@ const companySchema = new mongoose.Schema({
     role: {
         type: String,
         required: true,
-        default:'ENTREPRISE'
+        default: 'ENTREPRISE'
+    },
+    numRue: {
+        type: Number,
+    },
+    rue: {
+        type: String,
     },
 
+    CP: {
+        type: Number,
+    },
+    commune: {
+        type: String,
+    },
 });
 
-//exportation du modèle
-module.exports = mongoose.model('Company', companySchema);
-
-// employeeSchema.plugin(mongooseUniqueValidator);
-// companySchema.plugin(mongooseUniqueValidator);
-
-//définition du modèle
-// const companySchema = new mongoose.Schema({
-//     _id: mongoose.Schema.Types.ObjectId,
-//     companyName: {
+// définition du modèle
+// const entrepriseSchema = new mongoose.Schema({
+//     nomEntreprise: {
 //         type: String,
 //         required: true
 //     },
-//     Iban: {
+//     ibanEntreprise: {
 //         type: String,
 //         required: true,
 //         unique: true
 //     },
-//     siret: {
+//     numSiret: {
 //         type: Number,
 //         required: true,
 //         unique: true
 //     },
-//     Num: {
+//     numEntreprise: {
 //         type: Number,
 //         required: true,
 //         unique: true
 //     },
 //     password: {
 //         type: String,
-//         required: true
+//         required: true,
+//         default: 'insa'
 //     },
-//     numberStreet: {
+//     tel: {
 //         type: Number,
 //         required: true
 //     },
-//     street: {
+//     email: {
 //         type: String,
 //         required: true
 //     },
-
-//     codePostal: {
-//         type: Number,
-//         required: true
-//     },
-//     city: {
-//         type: String,
-//         required: true
-//     },
-//     name: {
-//         type: String,
-//         required: true
-//     },
-//     lastName: {
-//         type: String,
-//         required: true
-//     },
-//     phone: {
-//         type: Number,
-//         required: true
-//     },
-//     eMail: {
-//         type: String,
-//         required: true
-//     },
-//     creditCardNum: [{
+//     creditCards: [{
 //         type: mongoose.Schema.Types.ObjectId,
 //         ref: 'CreditCard'
 //     }],
-//     list-employees: [{
+//     employes: [{
 //         type: mongoose.Schema.Types.ObjectId,
 //         ref: 'User'
-//     }]
+//     }],
+//     role: {
+//         type: String,
+//         required: true,
+//         default: 'ENTREPRISE'
+//     },
 // });
 
+//exportation du modèle
+module.exports = mongoose.model('Entreprise', entrepriseSchema);

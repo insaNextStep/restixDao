@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 // var mongoose = require("mongoose");
 const CreditCard = require('../models/creditCards');
-const Employee = require("../models/employees");
-const Company = require('../models/companies');
+const Employee = require("../models/employes");
+const Company = require('../models/entreprises');
 
 router.get('/', (req, res, next) => {
     CreditCard.find({})

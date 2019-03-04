@@ -2,16 +2,27 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 // var mongoose = require("mongoose");
-const Employee = require("../models/employees");
-const Company = require("../models/companies");
+const Employe = require("../models/employes");
+const Entreprise = require("../models/entreprises");
 const CreditCard = require("../models/creditCards");
 
 router.get("/list", (req, res, next) => {
-    Employee.find({})
-        .populate("company")
-        .populate("creditCard")
-        .then(resultat => {
-            res.status(200).json(resultat);
+    Employe.find({})
+    .populate('entreprise')
+        .then(employesData => {
+            // var reponse = employesData.map(employe => {
+            //         return {
+            //             nom: employe.nom,
+            //             prenom: employe.prenom,
+            //             phone: employe.phone,
+            //             email: employe.email,
+            //             entreprise: employe.entreprise.name,
+            //             creditCard: employe.creditCard,
+            //             url: "http://localhost:3000/employes/" + employe._id
+            //         };
+            //     })
+            console.log(employesData);
+            res.status(200).json(employesData);
         })
         .catch(err => {
             console.log(err);
@@ -23,28 +34,29 @@ router.get("/list", (req, res, next) => {
 
 router.post("/add", (req, res, next) => {
     console.log(req.body);
-    console.log(req.body.company);
-    Company.findOne({
-        name: req.body.company
+    Entreprise.findOne({
+        nomEntreprise: req.body.entreprise
     })
         .populate("creditCards")
-        .then(company => {
+        .then(entreprise => {
+            console.log(entreprise._id);
             // intialise le nouveau employé
-            var employeeData = new Employee({
-                name: req.body.name,
-                phone: req.body.phone,
+            var employeData = new Employe({
+                nom: req.body.nom,
+                prenom: req.body.prenom,
+                tel: req.body.tel,
                 email: req.body.email,
-                company: company._id
             });
+            console.log(employeData);
 
             // recherche d'un CB disponible dans l'entreprise.
             var findCard = 0;
-            company.creditCards.forEach(card => {
+            entreprise.creditCards.forEach(card => {
                 console.log(card.status);
                 if (card.status === "NEW" && findCard === 0) {
                     // mise à jour de l'état de la CB
                     findCard = 1;
-                    employeeData.creditCard = card._id;
+                    employeData.creditCard = card._id;
                     CreditCard.findOneAndUpdate(
                         {
                             _id: card._id
@@ -59,11 +71,11 @@ router.post("/add", (req, res, next) => {
                 }
             });
             // sauvegard de l'employé
-            employeeData
+            employeData
                 .save()
                 .then(resultat => {
-                    company.employees.push(resultat._id);
-                    company.save(err => {
+                    entreprise.employes.push(resultat._id);
+                    entreprise.save(err => {
                         if (err) return handleError(err);
                     });
                     console.log(resultat);
@@ -81,20 +93,24 @@ router.post("/add", (req, res, next) => {
 router.get('/email/:refEmail', (req, res, next) => {
     const email = req.params.refEmail.toLowerCase();
     console.log('node email : ' + email);
-    Employee.findOne({
+    Employe.findOne({
             email: email
         }).exec()
         .then(data => {
-            console.log(data);
-            res.status(200).json({message: 'err'});
+            console.log('exite déjà : ' + data.email);
+            res.status(200).json({
+                message: 'err'
+            });
         })
         .catch(err => {
             console.log('nouveau login');
-            res.status(200).json({message: 'new'});
+            res.status(200).json({
+                message: 'new'
+            });
         });
 });
 
-router.post("/login", (req, res, next) => {
+router.post("/loginEmploye", (req, res, next) => {
     const logData = req.body;
     console.log("login zone");
     console.log(req.body);
@@ -125,7 +141,7 @@ router.post("/add-employe", (req, res, next) => {
     const dataBody = req.body;
     const dataToRegister = new Employee(dataBody);
     // Employee.findOne({'email': logData.email,'companyNumber': logData.companyNumber })
-    Employee.findOne(
+    Employe.findOne(
         {
             email: dataToRegister.email
         },
@@ -154,16 +170,16 @@ router.post("/add-employe", (req, res, next) => {
     );
 });
 
-router.get("/:employeeId", (req, res, next) => {
-    var id = req.params.employeeId;
+router.get("/:employeId", (req, res, next) => {
+    var id = req.params.employeId;
     console.log("id recu : " + id);
-    Employee.findById({
+    Employe.findById({
         _id: id
     })
         .populate("companyId")
         .exec()
-        .then(employeeDate => {
-            console.log(employeeDate);
+        .then(employeDate => {
+            console.log(employeDate);
             // var utilisateur = {
             //     name: employeeDate.name,
             //     lastName: employeeDate.lastName,
@@ -181,7 +197,7 @@ router.get("/:employeeId", (req, res, next) => {
             //     Activation: employeeDate.Activation
             // };
             // console.log(utilisateur);
-            res.status(200).json(employeeDate);
+            res.status(200).json(employeDate);
         })
         .catch(err => {
             res.status(500).json({
@@ -293,28 +309,28 @@ router.get("/:employeeId", (req, res, next) => {
 //         });
 // });
 
-router.get("/dissocierEmploye/:employeeId", (req, res, next) => {
-    const employeeId = req.params.employeeId;
+router.get("/dissocierEmploye/:employeId", (req, res, next) => {
+    const employeId = req.params.employeId;
 
-    Employee.findById({
-        _id: employeeId
+    Employe.findById({
+        _id: employeId
     })
         .populate("company")
-        .then(employeeData => {
-            const companyId = employeeData.company._id;
+        .then(employeData => {
+            const entrepriseId = employeData.entreprise._id;
 
             Company.findById({
-                _id: companyId
+                _id: entrepriseId
             })
-                .then(companyData => {
+                .then(entrepriseData => {
                     console.log("2e étape");
                     // rechercher l'id dans la table d'employés dans compagnie
-                    console.log("employeeId : " + employeeId);
-                    companyData.employees.splice(
-                        companyData.employees.indexOf(this.employeeId),
+                    console.log("employeId : " + employeId);
+                    entrepriseData.employes.splice(
+                        entrepriseData.employes.indexOf(this.employeId),
                         1
                     );
-                    companyData.save(err => {
+                    entrepriseData.save(err => {
                         if (err) return handleError(err);
                     });
                     console.log("3e étape");
@@ -356,34 +372,15 @@ router.get("/dissocierEmploye/:employeeId", (req, res, next) => {
 //         });
 // });
 
-router.post("/edit/:employeeId", (req, res, next) => {
-    var id = req.params.productId;
-    // déclaration d'une variable globale pour intégrer les élémnets de la page à mettre à jour
-    var updateOps = {};
-    //boucle sur l'ensemble des éléments de la page du formulaire de mise à jour
-    for (var ops of req.body) {
-        //on récupère un tableau de donnée poster sur la page web
-        updateOps[ops.propName] = ops.value;
-        /*tableau de valeur, avec un contenu au format json
-            [
-                {"propName":"name", "value":"un string"},
-                {"propName":"price", "value":"15"}
-            ]*/
-    }
-    //$set est un objet de mongoose
-    //ceci permet de mettre à jour 1 ou plusieurs éléments de la page
-    employee
-        .findOneAndUpdate(
-            {
-                _id: id
-            },
-            {
-                $set: updateOps
-            }
-        )
+router.patch("/update/:employeId", (req, res, next) => {
+    const id = req.params.employeId;
+    // // déclaration d'une variable globale pour intégrer les élémnets de la page à mettre à jour
+    var updateOps = req.body;
+    Employe
+        .findOneAndUpdate({_id: id}, {$set: updateOps})
         .then(result => {
-            console.log(result);
-            res.status(200).json(result);
+            console.log('update Ok');
+            res.status(200).json({message: 'Mise à jour terminée'});
         })
         .catch(err => {
             console.log(err);

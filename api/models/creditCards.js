@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+
+var schemaOptions = {
+    toObject: {
+      virtuals: true
+    }
+    ,toJSON: {
+      virtuals: true
+    }
+  };
+
+
 // définition du modèle
 const creditCardSchema = new mongoose.Schema({
     number: {
@@ -13,28 +24,22 @@ const creditCardSchema = new mongoose.Schema({
         default: 'NEW',
         required: true
     },
-});
+}, schemaOptions);
 
 // 1er ligne : la colonne virtuel
-creditCardSchema.virtual('company', {
-    ref: 'Company',
+creditCardSchema.virtual('entreprise', {
+    ref: 'Entreprise',
     localField: '_id',
     foreignField: 'creditCards',
     justOne: true,
 });
 
-creditCardSchema.virtual('employee', {
-    ref: 'Employee',
+creditCardSchema.virtual('employe', {
+    ref: 'Employe',
     localField: '_id',
     foreignField: 'creditCard',
     justOne: true,
 });
 
-// creditCardSchema.set('toObject', {
-//     virtuals: true
-// });
-creditCardSchema.set('toJSON', {
-    virtuals: true
-});
 //exportation du modèle
 module.exports = mongoose.model('CreditCard', creditCardSchema);
