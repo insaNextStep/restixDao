@@ -2,27 +2,21 @@ const mongoose = require('mongoose');
 
 
 var schemaOptions = {
-    toObject: {
-      virtuals: true
+    toJSON: {
+        virtuals: true
     }
-    ,toJSON: {
-      virtuals: true
-    }
-  };
+};
 
 
 // définition du modèle
 const creditCardSchema = new mongoose.Schema({
     number: {
-        type: Number,
-        required: true,
-        unique: true
+        type: Number
     },
     status: {
         type: String,
         enum: ['NEW', 'AFFECT', 'LOST', 'EXPIRED'],
-        default: 'NEW',
-        required: true
+        default: 'NEW'
     },
 }, schemaOptions);
 
@@ -31,13 +25,13 @@ creditCardSchema.virtual('entreprise', {
     ref: 'Entreprise',
     localField: '_id',
     foreignField: 'creditCards',
-    justOne: true,
+    justOne: true
 });
 
 creditCardSchema.virtual('employe', {
     ref: 'Employe',
     localField: '_id',
-    foreignField: 'creditCard',
+    foreignField: 'restix',
     justOne: true,
 });
 

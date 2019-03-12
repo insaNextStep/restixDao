@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<H1 style="text-align: center">Liste JSON</H1>
+
+<div class="container" style="max-width : 80%;">
+    <div class="panel panel-info">
+        <div style="padding-top:30px" class="panel-body">
+
+            <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+
+            <form id="loginform" class="form-horizontal" role="form" method="POST">
+
+                <div style="margin-bottom: 25px; min-height: 400px;" class="input-group">
+                    <span class="input-group-addon"></span>
+                    <input id="liste" type="textarea" class="form-control" name="liste" value="{{transaction.liste}}">
+                </div>
+
+                <div class="col-sm-12 controls">
+                    <input type="submit" class="btn btn-success" value="valider"></input>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

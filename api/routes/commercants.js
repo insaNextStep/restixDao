@@ -23,7 +23,7 @@ router.get('/list', (req, res, next) => {
             res.status(200).json(listCommercant);
         })
         .catch(err => {
-            // console.log(err);
+            console.log(err);
             res.status(500).json({
                 error: err
             });
@@ -34,23 +34,15 @@ router.post('/add', (req, res, next) => {
     const commercantData = new Commercant({
         _id: new mongoose.Types.ObjectId(),
         ibanCommercant: req.body.ibanCommercant,
-                siretCommercant: req.body.siretCommercant,
-        //         number: req.body.number,
-        //         password: req.body.password,
-        //         numberStreet: req.body.numberStreet,
-        //         street: req.body.street,
-        //         commune: req.body.commune,
-        //         codePostal: req.body.codePostal,
-        //         city: req.body.city,
+        siretCommercant: req.body.siretCommercant,
         nomCommercant: req.body.nomCommercant,
-        //         lastName:req.body.lastName,
         tel: req.body.tel,
         email: req.body.email,
-                tpe: req.body.tpe
+        tpe: req.body.tpe
     });
     commercantData.save()
         .then(resultat => {
-            // console.log(resultat);
+            console.log(resultat);
             res.status(201).json(resultat);
         })
         .catch(err => {
@@ -81,10 +73,12 @@ router.get('/email/:refEmail', (req, res, next) => {
 });
 
 router.get('/:commercantId', (req, res, next) => {
+
     const id = req.params.commercantId;
-    Commercant.findById({
+    Commercant.findOne({
             _id: id
-        }).exec()
+        })
+        .exec()
         .then(commercantData => {
             // const utilisateur = {
             //     eMail: commercantData.eMail,

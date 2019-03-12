@@ -11,38 +11,33 @@ var schemaOptions = {
   };
 
 const transactionSchema = new mongoose.Schema({
-    tpe: {
-        type: Number,
-        required: true,
+    tpe: {},
+    iban:{
+      type: String,
+      required: true
     },
-    restix: {
-        type: Number,
-        required: true
-    },
+    restix: {},
     date: {
         type: Date,
         required: true,
     },
-    montant: {
-        type: Number,
-        required: true,
-    },
+    formatDate: {},
+    montant: {},
 }, schemaOptions);
 
 transactionSchema.virtual('commercant', {
-    ref: 'Commercant',
-    localField: 'tpe',
-    foreignField: 'tpe',
-    justOne: true,
+     ref: 'Commercant',
+     localField: '_id',
+     foreignField: 'transactions',
+     justOne: true,
 });
 
 transactionSchema.virtual('employe', {
-    ref: 'Employe',
-    localField: 'restix',
-    foreignField: 'creditCard',
-    justOne: true,
+  ref: 'Employe',
+  localField: '_id',
+  foreignField: 'transactions',
+  justOne: true,
 });
-
 
 //exportation du modèle
 module.exports = mongoose.model('Transaction', transactionSchema);

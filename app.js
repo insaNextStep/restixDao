@@ -2,13 +2,15 @@ const express = require('express');
 // const morgan = require('morgan');
 const bodyParser = require('body-parser'); //analyseur de corps
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const MONGO_ATLAS_PW = "1tGTd0SBZS1MsyrX";
 const MONGO_ATLAS_USER = "AJCHAHID";
-const MONGO_ATLAS_URL = "cluster0-anoo3.mongodb.net";
-
+// const MONGO_ATLAS_URL = "cluster0-anoo3.mongodb.net";
 const nunjucks = require('nunjucks');
+// var cookieParser = require("cookie-parser");
+
+// app.use(cookieParser());
 // const nunjucks = require('nunjucks'); // moteur de template
 
 // const indexRoutes = require('./api/routes/index');
@@ -16,7 +18,8 @@ const employeRoutes = require('./api/routes/employes');
 const commercantRoutes = require('./api/routes/commercants');
 const entrepriseRoutes = require('./api/routes/entreprises');
 const creditCardRoutes = require('./api/routes/creditcards');
-// const transactionRoutes = require('./api/routes/transactions');
+const listRoutes = require('./api/routes/recuperliste')
+const transactionRoutes = require('./api/routes/transactions');
 
 //initialisation de la connexion à la base de données
 const mongoDB = "mongodb+srv://" + MONGO_ATLAS_USER + ":" + MONGO_ATLAS_PW + "@cluster0-anoo3.mongodb.net/projetTransversal?retryWrites=true";
@@ -56,12 +59,13 @@ app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 
 // initialisation des routes
 //1er argurment indique le chemin URL /  le second indique le fichier js à utilisé ./api/routes.products.js
-app.use('/transactions', require('./api/routes/transactions'));
+// app.use('/transactions', require('./api/routes/transactions'));
 app.use('/employes', employeRoutes);
 app.use('/commercants', commercantRoutes);
 app.use('/entreprises', entrepriseRoutes);
-app.use('/credit-cards', creditCardRoutes);
-// app.use('/transaction', transactionRoutes);
+app.use('/creditcards', creditCardRoutes);
+app.use('/jsonlist', listRoutes);
+app.use('/transaction', transactionRoutes);
 
 // attraper les erreurs à partir du moment ou il n'appartiennent pas au 2 routes ci-dessous
 app.use((req, res, next) => {

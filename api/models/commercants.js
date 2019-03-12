@@ -25,13 +25,17 @@ const commercantSchema = new mongoose.Schema({
         default: 'COMMERCANT'
     },
     siretCommercant: {
-        type: String,
+        type: Number,
         required: true,
     },
     ibanCommercant: {
         type: String,
         required: true,
-    }
+    },
+    transactions: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Transaction'
+    }],
 });
 
 //exportation du modèle

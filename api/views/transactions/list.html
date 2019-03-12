@@ -3,12 +3,32 @@
 {% block content %}
 <H1 style="text-align: center">Liste des transactions</H1>
 
-<div class="container" style="max-width : 30%;">
+<div class="container" style="max-width : 80%;">
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>tpe:</th>
+                    <th>data:</th>
+                    <th>montant:</th>
+                    <th>restix:</th>
+                    <th>iban:</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in listTransactions %}
+                <tr>
+                    <td>{{item.tpe}}</td>
+                    <td>{{item.date}}</td>
+                    <td>{{item.montant}}€</td>
+                    <td>{{item.restix}}</td>
+                    <td>{{item.iban}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-                        {% for item in listTpe %}
-                        <option> {{item.nomCommercant}} - {{item.tpe}}</option>
-                        {% endfor %}
- 
 </div>
 
 {% endblock %}

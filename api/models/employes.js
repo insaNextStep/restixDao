@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 // const mongooseUniqueValidator = require('mongoose-unique-validator');
 var schemaOptions = {
     toObject: {
-      virtuals: true
+        virtuals: true
+    },
+    toJSON: {
+        virtuals: true
     }
-    ,toJSON: {
-      virtuals: true
-    }
-  };
+};
 
 const employeSchema = new mongoose.Schema({
     nom: {
@@ -30,24 +30,42 @@ const employeSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        default:'insa'
+        default: 'insa'
     },
-    creditCard: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'CreditCard',
-        default: undefined
+    restix: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    soldeTotal: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    soldeJour: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    dateDernierDebit: {
+        type: Date,
+        required: true,
     },
     role: {
         type: String,
         required: true,
-        default:'EMPLOYE'
+        default: 'EMPLOYE'
     },
     status: {
         type: String,
         enum: ['NEW', 'ACTIVE', 'CLOSE'],
         default: 'NEW',
         required: true
-    }
+    },
+    transactions: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Transaction'
+    }],
 }, schemaOptions);
 
 employeSchema.virtual('entreprise', {
@@ -56,9 +74,5 @@ employeSchema.virtual('entreprise', {
     foreignField: 'employes',
     justOne: true,
 });
-
-// employeSchema.set('toJSON', {
-//     virtuals: true
-// });
 
 module.exports = mongoose.model('Employe', employeSchema);
