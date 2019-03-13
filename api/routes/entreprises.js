@@ -3,9 +3,9 @@ const router = express.Router();
 // const mongoose = require('mongoose');
 const Entreprise = require('../models/entreprises');
 const jwt = require('jsonwebtoken');
-// const bcrypt = require('../app.js').bcrypt
-// const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const bcrypt = require('../../bcrypt').bcrypt;
+const saltRounds = require('../../bcrypt').saltRounds;
+// const saltRounds = 10;
 
 router.get('/list', (req, res, next) => {
     Entreprise.find({})
