@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Employe = require("../models/employes");
 const Entreprise = require("../models/entreprises");
 const Commercant = require("../models/commercants");
-const bcrypt = require("bcrypt");
 const saltRounds = 10;
-
 const crypto = require('crypto');
+
 algorithm = 'seed-ofb',
     password = `KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZ
     *G-KaPdSgVkYp3s5v8y/B?E(H+MbQeTh

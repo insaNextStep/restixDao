@@ -2,9 +2,11 @@
   "name": "aventix",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "10.15.3"
+  },
   "description": "\"Projet tranversal INSA 2018/2019\"",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "author": "\"NextStep\"",
