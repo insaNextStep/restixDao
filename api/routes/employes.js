@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const Employe = require("../models/employes");
 const Entreprise = require("../models/entreprises");
-const Commercant = require('../models/commercants')
+const Commercant = require('../models/commercants');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
