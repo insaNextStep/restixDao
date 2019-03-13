@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 // const bcrypt = require('../../bcrypt').bcrypt;
 // const saltRounds = require('../../bcrypt').saltRounds;
 const jwt = require("jsonwebtoken");
@@ -105,7 +105,7 @@ router.post("/add", (req, res, next) => {
         .then(entreprise => {
             // intialise le nouveau employé
             const password = 'insa';
-            bcrypt.hash(password, saltRounds, (err, hash) => {
+            // bcrypt.hash(password, saltRounds, (err, hash) => {
                 var employeData = new Employe({
                     nom: req.body.nom,
                     prenom: req.body.prenom,
@@ -127,7 +127,7 @@ router.post("/add", (req, res, next) => {
                             error: err
                         });
                     });
-            });
+            // });
         });
 });
 

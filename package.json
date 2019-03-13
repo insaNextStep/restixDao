@@ -9,7 +9,7 @@
     "start": "node server.js"
   },
   "repository": {
-    "type": "restix",
+    "type": "git",
     "url": "https://github.com/insaNextStep/restixDao.git"
   },
   "author": "\"NextStep\"",
