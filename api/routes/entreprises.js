@@ -3,8 +3,8 @@ const router = express.Router();
 // const mongoose = require('mongoose');
 const Entreprise = require('../models/entreprises');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('../../bcrypt').bcrypt;
-const saltRounds = require('../../bcrypt').saltRounds;
+// const bcrypt = require('../../bcrypt').bcrypt;
+// const saltRounds = require('../../bcrypt').saltRounds;
 // const saltRounds = 10;
 
 router.get('/list', (req, res, next) => {
@@ -31,7 +31,7 @@ router.post("/loginEntreprise", (req, res, next) => {
             email: logData.email.toLowerCase()
         })
         .then(user => {
-            bcrypt.compare(logData.password, user.password, (err, resultat) => {
+            // bcrypt.compare(logData.password, user.password, (err, resultat) => {
                 if (resultat) {
                     const payload = {
                         subject: user._id
@@ -45,7 +45,7 @@ router.post("/loginEntreprise", (req, res, next) => {
                 } else {
                     res.status(500).send("Invalide Password");
                 }
-            })
+            // })
         })
         .catch(err => {
             console.log("invalide user : " + err);
@@ -113,7 +113,7 @@ router.get('/name/:entrepriseId', (req, res, next) => {
 
 router.post('/add', (req, res, next) => {
     password = 'insa'
-    bcrypt.hash(password, saltRounds, (err, hash) => {
+    // bcrypt.hash(password, saltRounds, (err, hash) => {
         var entrepriseData = new Entreprise({
             nomEntreprise: req.body.nomEntreprise,
             tel: req.body.tel,
@@ -134,7 +134,7 @@ router.post('/add', (req, res, next) => {
                     error: err
                 });
             });
-    })
+    // })
 });
 
 

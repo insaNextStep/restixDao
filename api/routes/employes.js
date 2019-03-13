@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require('../../bcrypt').bcrypt;
-const saltRounds = require('../../bcrypt').saltRounds;
+// const bcrypt = require('../../bcrypt').bcrypt;
+// const saltRounds = require('../../bcrypt').saltRounds;
 const jwt = require("jsonwebtoken");
 const Employe = require("../models/employes");
 const Entreprise = require("../models/entreprises");
@@ -104,7 +104,7 @@ router.post("/add", (req, res, next) => {
         .then(entreprise => {
             // intialise le nouveau employé
             const password = 'insa';
-            bcrypt.hash(password, saltRounds, (err, hash) => {
+            // bcrypt.hash(password, saltRounds, (err, hash) => {
                 var employeData = new Employe({
                     nom: req.body.nom,
                     prenom: req.body.prenom,
@@ -126,7 +126,7 @@ router.post("/add", (req, res, next) => {
                             error: err
                         });
                     });
-            });
+            // });
         });
 });
 
@@ -215,7 +215,7 @@ router.post('/loginEmploye', (req, res, next) => {
                 .then(data => {
                     console.log('\n\n\n *************************** mise à jour user :')
                     console.log(data);
-                    bcrypt.compare(logData.password, data.password, (err, resultat) => {
+                    // bcrypt.compare(logData.password, data.password, (err, resultat) => {
                         if (resultat) {
                             const newDate = new Date(Date.now());
                             console.log(Date.parse(newDate));
@@ -240,7 +240,7 @@ router.post('/loginEmploye', (req, res, next) => {
                         } else {
                             res.status(500).send("Invalide Password");
                         }
-                    })
+                    // })
                 });
         })
         .catch(err => {
