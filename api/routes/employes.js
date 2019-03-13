@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 const Employe = require("../models/employes");
 const Entreprise = require("../models/entreprises");
 const Commercant = require("../models/commercants");
+
 const saltRounds = 10;
-const crypto = require('crypto');
 
 algorithm = 'seed-ofb',
     password = `KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZ
