@@ -1,13 +1,16 @@
 {
   "name": "aventix",
   "version": "1.0.0",
-  "private": true,
   "engines": {
     "node": ">=8"
   },
   "description": "\"Projet tranversal INSA 2018/2019\"",
   "scripts": {
     "start": "node server.js"
+  },
+  "repository": {
+    "type": "restix",
+    "url": "https://github.com/insaNextStep/restixDao.git"
   },
   "author": "\"NextStep\"",
   "license": "ISC",
