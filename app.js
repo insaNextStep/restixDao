@@ -10,7 +10,7 @@ const MONGO_ATLAS_USER = "AJCHAHID";
 const nunjucks = require('nunjucks');
 // var cookieParser = require("cookie-parser");
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
+// const saltRounds = 10;
 module.exports.bcrypt = bcrypt;
 
 // app.use(cookieParser());
