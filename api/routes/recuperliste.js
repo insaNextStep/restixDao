@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const Employe = require("../models/employes");
 const Entreprise = require("../models/entreprises");
@@ -35,7 +35,7 @@ console.log('\n\n\n********************** nouvel ajout employé ****************
             .then(entreprise => {
                 // intialise le nouveau employé
                 const password = "insa";
-                bcrypt.hash(password, saltRounds, (err, hash) => {
+                // bcrypt.hash(password, saltRounds, (err, hash) => {
                     const employe = new Employe({
                         nom: element.nom,
                         prenom: element.prenom,
@@ -54,7 +54,7 @@ console.log('\n\n\n********************** nouvel ajout employé ****************
 
                             })
                             .catch(err=> console.log(`erreur mise à jour employe : ${employeSave.nom}`));
-                });
+                // });
             }).catch(err =>
                 console.log("erreur identificaion entreprise : " + err)
             );
