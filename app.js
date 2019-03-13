@@ -19,7 +19,7 @@ const nunjucks = require('nunjucks');
 const employeRoutes = require('./api/routes/employes');
 const commercantRoutes = require('./api/routes/commercants');
 const entrepriseRoutes = require('./api/routes/entreprises');
-const creditCardRoutes = require('./api/routes/creditcards');
+// const creditCardRoutes = require('./api/routes/creditcards');
 const listRoutes = require('./api/routes/recuperliste')
 const transactionRoutes = require('./api/routes/transactions');
 
@@ -65,7 +65,7 @@ app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/employes', employeRoutes);
 app.use('/commercants', commercantRoutes);
 app.use('/entreprises', entrepriseRoutes);
-app.use('/creditcards', creditCardRoutes);
+// app.use('/creditcards', creditCardRoutes);
 app.use('/jsonlist', listRoutes);
 app.use('/transaction', transactionRoutes);
 
