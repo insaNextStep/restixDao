@@ -9,9 +9,8 @@ const MONGO_ATLAS_USER = "AJCHAHID";
 // const MONGO_ATLAS_URL = "cluster0-anoo3.mongodb.net";
 const nunjucks = require('nunjucks');
 // var cookieParser = require("cookie-parser");
-const bcrypt = require('bcrypt');
 // const saltRounds = 10;
-module.exports.bcrypt = bcrypt;
+// module.exports.bcrypt = bcrypt;
 
 // app.use(cookieParser());
 // const nunjucks = require('nunjucks'); // moteur de template

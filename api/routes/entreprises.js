@@ -3,7 +3,7 @@ const router = express.Router();
 // const mongoose = require('mongoose');
 const Entreprise = require('../models/entreprises');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('../app.js').bcrypt
+// const bcrypt = require('../app.js').bcrypt
 // const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
