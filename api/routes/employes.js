@@ -198,7 +198,7 @@ router.post('/loginEmploye', (req, res, next) => {
     const d = new Date(Date.now());
     console.log('date ', d);
     Employe.findOne({
-            email: logData.email
+            email: logData.email.toLowerCase()
         })
         .then(user => {
             console.log(user);

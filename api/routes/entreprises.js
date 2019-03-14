@@ -3,9 +3,9 @@ const router = express.Router();
 // const mongoose = require('mongoose');
 const Entreprise = require('../models/entreprises');
 const jwt = require('jsonwebtoken');
-// const bcrypt = require('../../bcrypt').bcrypt;
+const bcrypt = require('bcryptjs');
 // const saltRounds = require('../../bcrypt').saltRounds;
-// const saltRounds = 10;
+const saltRounds = 10;
 
 router.get('/list', (req, res, next) => {
     Entreprise.find({})
@@ -25,17 +25,24 @@ router.get('/list', (req, res, next) => {
 });
 
 router.post("/loginEntreprise", (req, res, next) => {
+    console.log('\n\n ************************** loginEntreprise');
     const logData = req.body;
+    console.log(req.body);
     // Employee.findOne({'email': logData.email,'entrepriseNumber': logData.entrepriseNumber })
     Entreprise.findOne({
             email: logData.email.toLowerCase()
         })
         .then(user => {
-            // bcrypt.compare(logData.password, user.password, (err, resultat) => {
+            console.log(user);
+            bcrypt.compare(logData.password, user.password, (err, resultat) => {
                 if (resultat) {
                     const payload = {
-                        subject: user._id
+                        subject: user._id,
+                        role: user.role
                     };
+                    // const payload = {
+                    //     subject: user._id
+                    // };
                     const role = user.role;
                     const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
                     res.status(200).send({
@@ -45,7 +52,7 @@ router.post("/loginEntreprise", (req, res, next) => {
                 } else {
                     res.status(500).send("Invalide Password");
                 }
-            // })
+            })
         })
         .catch(err => {
             console.log("invalide user : " + err);
@@ -114,26 +121,26 @@ router.get('/name/:entrepriseId', (req, res, next) => {
 router.post('/add', (req, res, next) => {
     password = 'insa'
     // bcrypt.hash(password, saltRounds, (err, hash) => {
-        var entrepriseData = new Entreprise({
-            nomEntreprise: req.body.nomEntreprise,
-            tel: req.body.tel,
-            email: req.body.email,
-            ibanEntreprise: req.body.ibanEntreprise,
-            siretEntreprise: req.body.siretEntreprise,
-            password: hash
-        });
-        entrepriseData
-            .save()
-            .then(resultat => {
-                console.log(resultat);
-                res.status(201).json(resultat);
-            })
-            .catch(err => {
-                console.log(err);
-                res.status(500).json({
-                    error: err
-                });
+    var entrepriseData = new Entreprise({
+        nomEntreprise: req.body.nomEntreprise,
+        tel: req.body.tel,
+        email: req.body.email,
+        ibanEntreprise: req.body.ibanEntreprise,
+        siretEntreprise: req.body.siretEntreprise,
+        password: hash
+    });
+    entrepriseData
+        .save()
+        .then(resultat => {
+            console.log(resultat);
+            res.status(201).json(resultat);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
             });
+        });
     // })
 });
 
