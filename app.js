@@ -27,7 +27,7 @@ const transactionRoutes = require('./api/routes/transactions');
 const mongoDB = "mongodb+srv://" + MONGO_ATLAS_USER + ":" + MONGO_ATLAS_PW + "@cluster0-anoo3.mongodb.net/projetTransversal?retryWrites=true";
 // Get Mongoose to use the global promise library
 // mongoose.Promise = global.Promise;
-
+mongoose.Promise = global.Promise;
 mongoose.connect(mongoDB, {useNewUrlParser: true});
 
 

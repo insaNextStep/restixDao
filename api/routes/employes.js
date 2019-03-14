@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+const saltRounds = 10;
 // const bcrypt = require('../../bcrypt').bcrypt;
 // const saltRounds = require('../../bcrypt').saltRounds;
 const jwt = require("jsonwebtoken");
@@ -106,29 +107,29 @@ router.post("/add", (req, res, next) => {
         .then(entreprise => {
             // intialise le nouveau employé
             const password = 'insa';
-            // bcrypt.hash(password, saltRounds, (err, hash) => {
-            var employeData = new Employe({
-                nom: req.body.nom,
-                prenom: req.body.prenom,
-                tel: req.body.tel,
-                email: req.body.email,
-                password: hash
-            });
-
-            employeData
-                .save()
-                .then(resultat => {
-                    entreprise.employes.push(resultat._id);
-                    entreprise.save().then(res => {
-                        res.status(201).json(resultat);
-                    });
-                })
-                .catch(err => {
-                    res.status(500).json({
-                        error: err
-                    });
+            bcrypt.hash(password, saltRounds, (err, hash) => {
+                var employeData = new Employe({
+                    nom: req.body.nom,
+                    prenom: req.body.prenom,
+                    tel: req.body.tel,
+                    email: req.body.email,
+                    password: hash
                 });
-            // });
+
+                employeData
+                    .save()
+                    .then(resultat => {
+                        entreprise.employes.push(resultat._id);
+                        entreprise.save().then(res => {
+                            res.status(201).json(resultat);
+                        });
+                    })
+                    .catch(err => {
+                        res.status(500).json({
+                            error: err
+                        });
+                    });
+            });
         });
 });
 
@@ -200,60 +201,83 @@ router.post('/loginEmploye', (req, res, next) => {
     Employe.findOne({
             email: logData.email.toLowerCase()
         })
-        .then(user => {
-            console.log(user);
-            const dateDernierDebit = user.dateDernierDebit;
-            // controle de la date de la derniere transactions, si antérieur réinitialisation du solde du jour
-            if ((dateDernierDebit.getDate() !== d.getDate())) {
-                // initialisation du compte du jour
-                // employe.soldeJour = 20;
-                console.log('\n\n\n *************************** info hier :')
-                user.soldeJour = user.soldeTotal;
-                if (user.soldeTotal >= 20) {
-                    user.soldeJour = 20;
-                }
-            };
-            user.save()
-                .then(data => {
-                    console.log('\n\n\n *************************** mise à jour user :')
-                    console.log(data);
-                    // bcrypt.compare(logData.password, data.password, (err, resultat) => {
-                    // if (data) {
-                        // const newDate = new Date(Date.now());
-                        // console.log(newDate);
-                        // const nMinute = newDate.getMinutes() + 30;
-                        // newDate.setMinutes(nMinute);
-                        // console.log((newDate));
-                        // console.log(parseInt(new Date(Date.now())),exp);
-                        const payload = {
-                            subject: data._id,
-                            name: data.nom,
-                            prenom: data.prenom,
-                            email: data.email,
-                            role: data.role
-                        };
-                        // Header: { "alg": "HS256", "typ": "JWT" }                
-                        const role = data.role;
-                        const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
-                        res.status(200).send({
-                            token,
-                            role
+        // .then(user => {
+        // console.log(user);
+        // const dateDernierDebit = user.dateDernierDebit;
+        // // controle de la date de la derniere transactions, si antérieur réinitialisation du solde du jour
+        // if ((dateDernierDebit.getDate() !== d.getDate())) {
+        //     // initialisation du compte du jour
+        //     // employe.soldeJour = 20;
+        //     console.log('\n\n\n *************************** info hier :')
+        //     user.soldeJour = user.soldeTotal;
+        //     if (user.soldeTotal >= 20) {
+        //         user.soldeJour = 20;
+        //     }
+        // };
+        // user.save()
+        .then(data => {
+            // console.log('\n\n\n *************************** mise à jour user :')
+            console.log(data);
+            bcrypt.compare(logData.password, data.password, (err, resultat) => {
+                if (resultat) {
+                    let dateDernierDebit = data.dateDernierDebit;
+                    if (!dateDernierDebit){
+                        dateDernierDebit = new Date(Date.now());
+                        dateDernierDebit.setDate(dateDernierDebit.getDate()-1);
+                    }
+                    // controle de la date de la derniere transactions, si antérieur réinitialisation du solde du jour
+                    if ((dateDernierDebit.getDate() !== d.getDate()) || !dateDernierDebit) {
+                        // initialisation du compte du jour
+                        // employe.soldeJour = 20;
+                        console.log('\n\n\n *************************** info hier :')
+                        if (!data.soldeTotal){
+                            data.soldeTotal = 0;
+                        }
+                        data.soldeJour = data.soldeTotal;
+                        if (data.soldeTotal >= 20) {
+                            data.soldeJour = 20;
+                        }
+                        const newUser = data;
+                        newUser.save().then(res => {
+                            console.log('solde du jour mise à jour');
                         });
-                    // } else {
-                    //     res.status(500).send("Invalide Password");
-                    // }
-                    // })
-                }).catch(err => {
-                    res.status(500).send({
-                        error: err
-                    })
-                });
+                    };
+                    // const newDate = new Date(Date.now());
+                    // console.log(newDate);
+                    // const nMinute = newDate.getMinutes() + 30;
+                    // newDate.setMinutes(nMinute);
+                    // console.log((newDate));
+                    // console.log(parseInt(new Date(Date.now())), exp);
+                    const payload = {
+                        subject: data._id,
+                        name: data.nom,
+                        prenom: data.prenom,
+                        email: data.email,
+                        role: data.role
+                    };
+                    // Header: { "alg": "HS256", "typ": "JWT" }                
+                    const role = data.role;
+                    const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                    res.status(200).send({
+                        token,
+                        role
+                    });
+                } else {
+                    res.status(500).send("Invalide Password");
+                }
+            });
+            // }).catch(err => {
+            //     res.status(500).send({
+            //         error: err
+            //     })
+            // });
         })
         .catch(err => {
             console.log("invalide user : " + err);
             res.status(500).send("Invalide User : " + err);
         });
-});
+    // });
+})
 
 router.post("/add-employe", (req, res, next) => {
     const dataBody = req.body;

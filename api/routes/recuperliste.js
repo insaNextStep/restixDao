@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-// const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const saltRounds = 10;
 const Employe = require("../models/employes");
 const Entreprise = require("../models/entreprises");
@@ -20,7 +20,7 @@ router.get("/restix", (req, res, next) => {
 });
 
 router.post("/employes", (req, res, next) => {
-console.log('\n\n\n********************** nouvel ajout employé **********************\n\n\n')
+    console.log('\n\n\n********************** nouvel ajout employé **********************\n\n\n')
 
     let listejson = [];
     let liste = req.body.liste.split(";");
@@ -35,7 +35,7 @@ console.log('\n\n\n********************** nouvel ajout employé ****************
             .then(entreprise => {
                 // intialise le nouveau employé
                 const password = "insa";
-                // bcrypt.hash(password, saltRounds, (err, hash) => {
+                bcrypt.hash(password, saltRounds, (err, hash) => {
                     const employe = new Employe({
                         nom: element.nom,
                         prenom: element.prenom,
@@ -49,12 +49,12 @@ console.log('\n\n\n********************** nouvel ajout employé ****************
                         .then(employeSave => {
                             entreprise.employes.push(employeSave._id)
                             entreprise.save()
-                            .then(entrepriseSave=>console.log(`entreprise ${entrepriseSave.nomEntreprise}, a ajouter l'employé ${employeSave.nom}`))
-                            .catch(err=> console.log(`erreur de mise à jour ${entreprise.nomEntreprise} avec ${employeSave.nom}`));
+                                .then(entrepriseSave => console.log(`entreprise ${entrepriseSave.nomEntreprise}, a ajouter l'employé ${employeSave.nom}`))
+                                .catch(err => console.log(`erreur de mise à jour ${entreprise.nomEntreprise} avec ${employeSave.nom}`));
 
-                            })
-                            .catch(err=> console.log(`erreur mise à jour employe : ${employeSave.nom}`));
-                // });
+                        })
+                        .catch(err => console.log(`erreur mise à jour employe : ${employeSave.nom}`));
+                });
             }).catch(err =>
                 console.log("erreur identificaion entreprise : " + err)
             );

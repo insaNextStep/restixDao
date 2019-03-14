@@ -120,28 +120,28 @@ router.get('/name/:entrepriseId', (req, res, next) => {
 
 router.post('/add', (req, res, next) => {
     password = 'insa'
-    // bcrypt.hash(password, saltRounds, (err, hash) => {
-    var entrepriseData = new Entreprise({
-        nomEntreprise: req.body.nomEntreprise,
-        tel: req.body.tel,
-        email: req.body.email,
-        ibanEntreprise: req.body.ibanEntreprise,
-        siretEntreprise: req.body.siretEntreprise,
-        password: hash
-    });
-    entrepriseData
-        .save()
-        .then(resultat => {
-            console.log(resultat);
-            res.status(201).json(resultat);
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                error: err
-            });
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+        var entrepriseData = new Entreprise({
+            nomEntreprise: req.body.nomEntreprise,
+            tel: req.body.tel,
+            email: req.body.email,
+            ibanEntreprise: req.body.ibanEntreprise,
+            siretEntreprise: req.body.siretEntreprise,
+            password: hash
         });
-    // })
+        entrepriseData
+            .save()
+            .then(resultat => {
+                console.log(resultat);
+                res.status(201).json(resultat);
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                    error: err
+                });
+            });
+    })
 });
 
 
