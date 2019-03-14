@@ -8,6 +8,7 @@ const Employe = require("../models/employes");
 const Entreprise = require("../models/entreprises");
 const Commercant = require("../models/commercants");
 
+const crypto = require('crypto');
 algorithm = 'seed-ofb',
     password = `KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZ
     *G-KaPdSgVkYp3s5v8y/B?E(H+MbQeTh
@@ -106,27 +107,27 @@ router.post("/add", (req, res, next) => {
             // intialise le nouveau employé
             const password = 'insa';
             // bcrypt.hash(password, saltRounds, (err, hash) => {
-                var employeData = new Employe({
-                    nom: req.body.nom,
-                    prenom: req.body.prenom,
-                    tel: req.body.tel,
-                    email: req.body.email,
-                    password: hash
-                });
+            var employeData = new Employe({
+                nom: req.body.nom,
+                prenom: req.body.prenom,
+                tel: req.body.tel,
+                email: req.body.email,
+                password: hash
+            });
 
-                employeData
-                    .save()
-                    .then(resultat => {
-                        entreprise.employes.push(resultat._id);
-                        entreprise.save().then(res => {
-                            res.status(201).json(resultat);
-                        });
-                    })
-                    .catch(err => {
-                        res.status(500).json({
-                            error: err
-                        });
+            employeData
+                .save()
+                .then(resultat => {
+                    entreprise.employes.push(resultat._id);
+                    entreprise.save().then(res => {
+                        res.status(201).json(resultat);
                     });
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        error: err
+                    });
+                });
             // });
         });
 });
@@ -195,7 +196,7 @@ router.post('/loginEmploye', (req, res, next) => {
     const logData = req.body;
     console.log(logData);
     const d = new Date(Date.now());
-
+    console.log('date ', d);
     Employe.findOne({
             email: logData.email
         })
@@ -217,31 +218,35 @@ router.post('/loginEmploye', (req, res, next) => {
                     console.log('\n\n\n *************************** mise à jour user :')
                     console.log(data);
                     // bcrypt.compare(logData.password, data.password, (err, resultat) => {
-                        if (resultat) {
-                            const newDate = new Date(Date.now());
-                            console.log(Date.parse(newDate));
-                            const nMinute = newDate.getMinutes() + 30;
-                            newDate.setMinutes(nMinute);
-                            console.log(Date.parse(newDate));
-                            // console.log(parseInt(new Date(Date.now())),exp);
-                            const payload = {
-                                subject: data._id,
-                                name: data.nom,
-                                prenom: data.prenom,
-                                email: data.email,
-                                role: data.role
-                            };
-                            // Header: { "alg": "HS256", "typ": "JWT" }                
-                            const role = data.role;
-                            const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
-                            res.status(200).send({
-                                token,
-                                role
-                            });
-                        } else {
-                            res.status(500).send("Invalide Password");
-                        }
+                    // if (data) {
+                        // const newDate = new Date(Date.now());
+                        // console.log(newDate);
+                        // const nMinute = newDate.getMinutes() + 30;
+                        // newDate.setMinutes(nMinute);
+                        // console.log((newDate));
+                        // console.log(parseInt(new Date(Date.now())),exp);
+                        const payload = {
+                            subject: data._id,
+                            name: data.nom,
+                            prenom: data.prenom,
+                            email: data.email,
+                            role: data.role
+                        };
+                        // Header: { "alg": "HS256", "typ": "JWT" }                
+                        const role = data.role;
+                        const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                        res.status(200).send({
+                            token,
+                            role
+                        });
+                    // } else {
+                    //     res.status(500).send("Invalide Password");
+                    // }
                     // })
+                }).catch(err => {
+                    res.status(500).send({
+                        error: err
+                    })
                 });
         })
         .catch(err => {
