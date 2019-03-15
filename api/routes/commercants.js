@@ -3,8 +3,6 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Commercant = require('../models/commercants');
 
-
-
 router.get('/list', (req, res, next) => {
     Commercant.find()
         .exec()
@@ -31,25 +29,31 @@ router.get('/list', (req, res, next) => {
 });
 
 router.post('/add', (req, res, next) => {
-    const commercantData = new Commercant({
-        _id: new mongoose.Types.ObjectId(),
-        ibanCommercant: req.body.ibanCommercant,
-        siretCommercant: req.body.siretCommercant,
-        nomCommercant: req.body.nomCommercant,
-        tel: req.body.tel,
-        email: req.body.email,
-        tpe: req.body.tpe
-    });
-    commercantData.save()
-        .then(resultat => {
-            console.log(resultat);
-            res.status(201).json(resultat);
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: err
-            });
+    password = 'insa'
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+        var commercantData = new Commercant({
+            _id: new mongoose.Types.ObjectId(),
+            ibanCommercant: req.body.ibanCommercant,
+            siretCommercant: req.body.siretCommercant,
+            nomCommercant: req.body.nomCommercant,
+            tel: req.body.tel,
+            email: req.body.email,
+            tpe: req.body.tpe,
+            password: hash
         });
+        commercantData
+            .save()
+            .then(resultat => {
+                console.log(resultat);
+                res.status(201).json(resultat);
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                    error: err
+                });
+            });
+    })
 });
 
 router.get('/email/:refEmail', (req, res, next) => {
@@ -136,6 +140,39 @@ router.patch('/update/:commercantId', (req, res, next) => {
             res.status(500).json({
                 error: err
             });
+        });
+});
+
+router.post("/loginCommercant", (req, res, next) => {
+    console.log('\n\n ************************** loginCommercant');
+    const logData = req.body;
+    console.log(req.body);
+    // Employee.findOne({'email': logData.email,'entrepriseNumber': logData.entrepriseNumber })
+    Commercant.findOne({
+            email: logData.email.toLowerCase()
+        })
+        .then(user => {
+            console.log(user);
+            bcrypt.compare(logData.password, user.password, (err, resultat) => {
+                if (resultat) {
+                    const payload = {
+                        subject: user._id,
+                        role: user.role
+                    };
+                    const role = user.role;
+                    const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                    res.status(200).send({
+                        token,
+                        role
+                    });
+                } else {
+                    res.status(500).send("Invalide Password");
+                }
+            })
+        })
+        .catch(err => {
+            console.log("invalide user : " + err);
+            res.status(500).send("Invalide User : " + err);
         });
 });
 

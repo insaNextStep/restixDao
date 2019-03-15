@@ -79,7 +79,6 @@ router.get('/mesEmployes/:entrepriseId', (req, res, next) => {
         });
 });
 
-
 router.get('/:entrepriseId', (req, res, next) => {
     const id = req.params.entrepriseId;
     Entreprise.findById({
@@ -98,8 +97,6 @@ router.get('/:entrepriseId', (req, res, next) => {
             });
         });
 });
-
-
 
 router.get('/name/:entrepriseId', (req, res, next) => {
     const id = req.params.entrepriseId;
@@ -143,7 +140,6 @@ router.post('/add', (req, res, next) => {
             });
     })
 });
-
 
 router.get('/email/:refEmail', (req, res, next) => {
     const email = req.params.refEmail.toLowerCase();

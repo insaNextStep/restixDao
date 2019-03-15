@@ -280,6 +280,7 @@ router.get('/list', (req, res, next) => {
                     const montant = decrypt(transaction.montant);
                     const formatDate = decrypt(transaction.formatDate);
                     const iban = decrypt(transaction.iban);
+                    const _id = transaction._id;
                     // test si le iban existe
 
                     //const iban = (transaction.commercant && transaction.commercant !== "null" && transaction.commercant !== "undefined")?(transaction.commercant.ibanCommercant):('');
@@ -288,7 +289,8 @@ router.get('/list', (req, res, next) => {
                         date: formatDate,
                         tpe: tpe,
                         restix: restix,
-                        iban: iban
+                        iban: iban,
+                        _id: _id
                     }
                 })
             console.log(listTransactions);

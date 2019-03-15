@@ -8,20 +8,18 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>tpe:</th>
+                    <th>référence:</th>
                     <th>data:</th>
                     <th>montant:</th>
-                    <th>restix:</th>
                     <th>iban:</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in listTransactions %}
                 <tr>
-                    <td>{{item.tpe}}</td>
+                    <td>{{item._id}}</td>
                     <td>{{item.date}}</td>
                     <td>{{item.montant}}€</td>
-                    <td>{{item.restix}}</td>
                     <td>{{item.iban}}</td>
                 </tr>
                 {% endfor %}
