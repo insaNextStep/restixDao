@@ -271,6 +271,7 @@ router.get('/list', (req, res, next) => {
     Transaction.find()
         .populate('commercant')
         .populate('employe')
+        .sort({date: -1})
         .exec()
         .then(listTransactions => {
             const reponse =

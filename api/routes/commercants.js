@@ -176,4 +176,24 @@ router.post("/loginCommercant", (req, res, next) => {
         });
 });
 
+
+router.get('/mesVentes/:commercantId', (req, res, next) => {
+    const id = req.params.commercantId;
+    Commercant.findById({
+            _id: id
+        })
+        .populate('transactions')
+        .select('transactions')
+        .exec()
+        .then(commercantData => {
+            console.log(commercantData);
+            res.status(200).json(commercantData);
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            });
+        });
+});
+
 module.exports = router;

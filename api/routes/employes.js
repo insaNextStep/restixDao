@@ -17,6 +17,11 @@ algorithm = 'seed-ofb',
     6w9z$C&F)J@NcRfUjXn2r5u7x!A%D*G-
     p3s6v9y$B&E)H@McQfTjWnZr4t7w!z%C`;
 
+function sortByDate(key1, key2) {
+    console.log('sortByDate');
+    return key2.date > key1.date;
+}
+
 function decrypt(text) {
     var decipher = crypto.createDecipher(algorithm, password)
     var dec = decipher.update(text, 'hex', 'utf8')
@@ -76,20 +81,27 @@ router.get('/transactions/:employeId', (req, res, next) => {
             .populate('transactions')
             .then(employe => {
                 listTransaction = employe.transactions;
+                console.log('list Transaction ', listTransaction);
                 const reponse =
                     listTransaction.map(transaction => {
                         const refTpe = decrypt(listTransaction[0].tpe);
                         const nomDuCommercant = commercants.find(element => {
                             return element.tpe = refTpe;
                         })
+
                         return {
                             formatDate: decrypt(transaction.formatDate),
                             commercant: nomDuCommercant.nomCommercant,
-                            montant: decrypt(transaction.montant)
+                            montant: decrypt(transaction.montant),
+                            date: transaction.date
                         }
+
                     })
-                console.log(reponse);
-                res.status(200).json(reponse);
+                // response.sort_by(el => el.date, reverse = true);
+                // console.log(autre);
+                const tableau = reponse.sort(sortByDate);
+                console.log(tableau);
+                res.status(200).json(tableau);
             })
             .catch(err => {
                 console.log('err : ' + err)
@@ -221,16 +233,16 @@ router.post('/loginEmploye', (req, res, next) => {
             bcrypt.compare(logData.password, data.password, (err, resultat) => {
                 if (resultat) {
                     let dateDernierDebit = data.dateDernierDebit;
-                    if (!dateDernierDebit){
+                    if (!dateDernierDebit) {
                         dateDernierDebit = new Date(Date.now());
-                        dateDernierDebit.setDate(dateDernierDebit.getDate()-1);
+                        dateDernierDebit.setDate(dateDernierDebit.getDate() - 1);
                     }
                     // controle de la date de la derniere transactions, si antérieur réinitialisation du solde du jour
                     if ((dateDernierDebit.getDate() !== d.getDate()) || !dateDernierDebit) {
                         // initialisation du compte du jour
                         // employe.soldeJour = 20;
                         console.log('\n\n\n *************************** info hier :')
-                        if (!data.soldeTotal){
+                        if (!data.soldeTotal) {
                             data.soldeTotal = 0;
                         }
                         data.soldeJour = data.soldeTotal;
