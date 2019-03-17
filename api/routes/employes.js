@@ -23,8 +23,8 @@ function sortByDate(key1, key2) {
 }
 
 function decrypt(text) {
-    var decipher = crypto.createDecipher(algorithm, password)
-    var dec = decipher.update(text, 'hex', 'utf8')
+    var decipher = crypto.createDecipher(algorithm, password);
+    var dec = decipher.update(text, 'hex', 'utf8');
     dec += decipher.final('utf8');
     return dec;
 }
@@ -70,12 +70,11 @@ router.get("/list", (req, res, next) => {
 router.get('/transactions/:employeId', (req, res, next) => {
     console.log('\n\n\n**************************** liste Transaction ****************************\n\n\n');
     listCommercant().then(commercants => {
-        console.log(commercants);
-        console.log('\n\n\n');
         const id = req.params.employeId;
         Employe.findById({
                 _id: id
-            }).select({
+            })
+            .select({
                 transactions: 1
             })
             .populate('transactions')
@@ -213,20 +212,6 @@ router.post('/loginEmploye', (req, res, next) => {
     Employe.findOne({
             email: logData.email.toLowerCase()
         })
-        // .then(user => {
-        // console.log(user);
-        // const dateDernierDebit = user.dateDernierDebit;
-        // // controle de la date de la derniere transactions, si antérieur réinitialisation du solde du jour
-        // if ((dateDernierDebit.getDate() !== d.getDate())) {
-        //     // initialisation du compte du jour
-        //     // employe.soldeJour = 20;
-        //     console.log('\n\n\n *************************** info hier :')
-        //     user.soldeJour = user.soldeTotal;
-        //     if (user.soldeTotal >= 20) {
-        //         user.soldeJour = 20;
-        //     }
-        // };
-        // user.save()
         .then(data => {
             // console.log('\n\n\n *************************** mise à jour user :')
             console.log(data);
@@ -254,12 +239,6 @@ router.post('/loginEmploye', (req, res, next) => {
                             console.log('solde du jour mise à jour');
                         });
                     };
-                    // const newDate = new Date(Date.now());
-                    // console.log(newDate);
-                    // const nMinute = newDate.getMinutes() + 30;
-                    // newDate.setMinutes(nMinute);
-                    // console.log((newDate));
-                    // console.log(parseInt(new Date(Date.now())), exp);
                     const payload = {
                         subject: data._id,
                         name: data.nom,
@@ -278,55 +257,12 @@ router.post('/loginEmploye', (req, res, next) => {
                     res.status(500).send("Invalide Password");
                 }
             });
-            // }).catch(err => {
-            //     res.status(500).send({
-            //         error: err
-            //     })
-            // });
         })
         .catch(err => {
             console.log("invalide user : " + err);
             res.status(500).send("Invalide User : " + err);
         });
-    // });
 })
-
-router.post("/add-employe", (req, res, next) => {
-    const dataBody = req.body;
-    console.log(dataBody);
-    // const dataToRegister = new Employe(dataBody);
-
-    // Employe.findOne({
-    //         email: dataToRegister.email
-    //     },
-    //     (err, user) => {
-    //         if (err) {
-    //             console.log(err);
-    //         } else {
-    //             if (!user) {
-    //                 dataToRegister.statusCompte = "Activé";
-    //                 dataToRegister.save((error, registeredData) => {
-    //                     if (error) {
-    //                         console.log(error);
-    //                     } else {
-    //                         let payload = {
-    //                             subject: registeredData._id
-    //                         };
-    //                         let token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
-    //                         res.status(200).send({
-    //                             token
-    //                         });
-    //                     }
-    //                 });
-    //             } else {
-    //                 res.status(401).send(
-    //                     "Vous êtes déjà enregistré avec cette adresse mail"
-    //                 );
-    //             }
-    //         }
-    //     }
-    // );
-});
 
 router.get("/:employeId", (req, res, next) => {
     var id = req.params.employeId;

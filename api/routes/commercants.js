@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Commercant = require('../models/commercants');
+const bcrypt = require('bcryptjs');
+const saltRounds = 10;
 
 router.get('/list', (req, res, next) => {
     Commercant.find()
@@ -167,6 +169,9 @@ router.post("/loginCommercant", (req, res, next) => {
                     });
                 } else {
                     res.status(500).send("Invalide Password");
+                }
+                if(err) {
+                    console.log({erreur:  err});
                 }
             })
         })
