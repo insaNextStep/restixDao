@@ -25,6 +25,7 @@ function decrypt(text) {
     var dec = decipher.update(text, 'hex', 'utf8')
     dec += decipher.final('utf8');
     return dec;
+    
 }
 
 // async function testIban(tpe) {
