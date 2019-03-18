@@ -10,6 +10,7 @@ const Entreprise = require("../models/entreprises");
 const Commercant = require("../models/commercants");
 
 const crypto = require('crypto');
+
 algorithm = 'seed-ofb',
     password = `KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZ
     *G-KaPdSgVkYp3s5v8y/B?E(H+MbQeTh
@@ -17,7 +18,8 @@ algorithm = 'seed-ofb',
     6w9z$C&F)J@NcRfUjXn2r5u7x!A%D*G-
     p3s6v9y$B&E)H@McQfTjWnZr4t7w!z%C`;
 
-function sortByDate(key1, key2) {
+
+    function sortByDate(key1, key2) {
     console.log('sortByDate');
     return key2.date > key1.date;
 }
@@ -187,11 +189,8 @@ router.get('/solde/:employeId', (req, res, next) => {
     console.log(id);
     Employe.findById({
             _id: id
-        }).select({
-            _id: 0,
-            soldeJour: 1,
-            soldeTotal: 1,
         })
+        .select({soldeTotal: 1, soldeJour: 1, _id: 0})
         .then(employeData => {
             console.log(employeData);
             res.status(200).json(employeData);
@@ -322,7 +321,6 @@ router.get("/dissocierEmploye/:employeId", (req, res, next) => {
             });
         });
 });
-
 
 router.patch("/update/:employeId", (req, res, next) => {
     const id = req.params.employeId;
