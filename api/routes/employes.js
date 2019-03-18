@@ -241,7 +241,8 @@ router.post('/loginEmploye', (req, res, next) => {
                     };
                     const payload = {
                         subject: data._id,
-                        name: data.nom,
+                        nom: data.nom,
+                        restix: data.restix,
                         prenom: data.prenom,
                         email: data.email,
                         role: data.role
