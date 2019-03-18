@@ -2,8 +2,29 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Commercant = require('../models/commercants');
+const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
+
+const crypto = require('crypto');
+algorithm = 'seed-ofb',
+    password = `KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZ
+    *G-KaPdSgVkYp3s5v8y/B?E(H+MbQeTh
+    z%C*F-JaNdRgUkXp2s5u8x/A?D(G+KbP
+    6w9z$C&F)J@NcRfUjXn2r5u7x!A%D*G-
+    p3s6v9y$B&E)H@McQfTjWnZr4t7w!z%C`;
+
+function sortByDate(key1, key2) {
+    console.log('sortByDate');
+    return key2.date > key1.date;
+}
+
+function decrypt(text) {
+    var decipher = crypto.createDecipher(algorithm, password);
+    var dec = decipher.update(text, 'hex', 'utf8');
+    dec += decipher.final('utf8');
+    return dec;
+}
 
 router.get('/list', (req, res, next) => {
     Commercant.find()
@@ -43,6 +64,7 @@ router.post('/add', (req, res, next) => {
             tpe: req.body.tpe,
             password: hash
         });
+        console.log('commercantData', commercantData);
         commercantData
             .save()
             .then(resultat => {
@@ -153,15 +175,19 @@ router.post("/loginCommercant", (req, res, next) => {
     Commercant.findOne({
             email: logData.email.toLowerCase()
         })
-        .then(user => {
-            console.log(user);
-            bcrypt.compare(logData.password, user.password, (err, resultat) => {
+        .then(data => {
+            console.log(data);
+            bcrypt.compare(logData.password, data.password, (err, resultat) => {
                 if (resultat) {
                     const payload = {
-                        subject: user._id,
-                        role: user.role
+                        subject: data._id,
+                        name: data.nom,
+                        prenom: data.prenom,
+                        email: data.email,
+                        role: data.role
                     };
-                    const role = user.role;
+                    // Header: { "alg": "HS256", "typ": "JWT" }                
+                    const role = data.role;
                     const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
                     res.status(200).send({
                         token,
@@ -190,9 +216,24 @@ router.get('/mesVentes/:commercantId', (req, res, next) => {
         .populate('transactions')
         .select('transactions')
         .exec()
-        .then(commercantData => {
-            console.log(commercantData);
-            res.status(200).json(commercantData);
+        .then(commercant => {
+            listTransaction = commercant.transactions;
+            const reponse =
+                listTransaction.map(transaction => {
+                    return {
+
+                        formatDate: decrypt(transaction.formatDate),
+                        refTransaction: transaction._id,
+                        montant: decrypt(transaction.montant),
+                        date: transaction.date
+                    }
+
+                })
+            // response.sort_by(el => el.date, reverse = true);
+            // console.log(autre);
+            const tableau = reponse.sort(sortByDate);
+            console.log(tableau);
+            res.status(200).json(tableau);
         })
         .catch(err => {
             res.status(500).json({
