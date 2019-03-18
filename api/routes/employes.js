@@ -190,7 +190,7 @@ router.get('/solde/:employeId', (req, res, next) => {
     Employe.findById({
             _id: id
         })
-        .select({soldeTotal: 1, soldeJour: 1, _id: 0})
+        .select({soldeTotal: 1, soldeJour: 1})
         .then(employeData => {
             console.log(employeData);
             res.status(200).json(employeData);

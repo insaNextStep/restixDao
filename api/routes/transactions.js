@@ -45,7 +45,7 @@ function decrypt(text) {
 //             employe.soldeJour -= montant;
 //             employe.save(err => {
 //                 if (err) return handleError(err);
-//                 console.log(`employe ${employeSave.nom}, a été débit de ${req.body.montant}`)
+//                 console.log(`employe ${employeSave.nom}, a été débit de ${depense}`)
 //             })
 //         })
 // }
@@ -88,11 +88,12 @@ router.post('/', (req, res, next) => {
         ('0' + (d.getMonth() + 1)).slice(-2),
         d.getFullYear()
     ].join('/');
-
+    var depense = req.body.montant;
+    depense = Number.parseFloat(depense).toFixed(2);
     // création de l'objet transaction avec les élements du formlaires
     const restix = encrypt(req.body.restix);
     const tpe = encrypt(tpeSelect[1]);
-    const montant = encrypt(req.body.montant);
+    const montant = encrypt(depense);
     // const dateDuJour = encrypt(d);
     const formatDate = encrypt(dateMod);
 
@@ -137,8 +138,8 @@ router.post('/', (req, res, next) => {
                 const dateDernierDebit = employe.dateDernierDebit;
 
                 // debit sur le compte principal et celui du jour
-                employe.soldeTotal -= req.body.montant;
-                employe.soldeJour -= req.body.montant;
+                employe.soldeTotal -= depense;
+                employe.soldeJour -= depense;
 
                 // controle du débit
                 if (employe.soldeTotal >= 0 && employe.soldeJour >= 0) {
@@ -150,7 +151,7 @@ router.post('/', (req, res, next) => {
                         employe.soldeJour = employe.soldeTotal;
                         if (employe.soldeTotal >= 20) {
                             employe.soldeJour = 20;
-                            employe.soldeJour -= req.body.montant;
+                            employe.soldeJour -= depense;
                         }
                     };
 
@@ -172,7 +173,7 @@ router.post('/', (req, res, next) => {
                                     // enregistrement de la transaction chez l'employer
                                     employe.save(err => {
                                         if (err) return handleError(err);
-                                        console.log(`employe ${employe.nom}, a été débit de ${req.body.montant}`);
+                                        console.log(`employe ${employe.nom}, a été débit de ${depense}`);
 
                                         // enregistremnet de la transaction chez le commercant
                                         commercant.transactions.push(data._id);
