@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- classement par numéro IBAN -->
+
+                {% for item in listTransactions %}
+    <iban id="" + {{item.iban}}>
+        <ref>{{item._id}}</ref>
+        <montant>{{item.montant}}€</montant>
+        <date> {{item.date}} </date>
+    </iban>
+                {% endfor %}
