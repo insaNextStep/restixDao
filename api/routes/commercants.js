@@ -181,7 +181,7 @@ router.post("/loginCommercant", (req, res, next) => {
                 if (resultat) {
                     const payload = {
                         subject: data._id,
-                        name: data.nom,
+                        nomCommercant: data.nomCommercant,
                         prenom: data.prenom,
                         email: data.email,
                         role: data.role
@@ -206,7 +206,6 @@ router.post("/loginCommercant", (req, res, next) => {
             res.status(500).send("Invalide User : " + err);
         });
 });
-
 
 router.get('/mesVentes/:commercantId', (req, res, next) => {
     const id = req.params.commercantId;
