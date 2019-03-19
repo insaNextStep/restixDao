@@ -85,9 +85,11 @@ router.get('/transactions/:employeId', (req, res, next) => {
                 console.log('list Transaction ', listTransaction);
                 const reponse =
                     listTransaction.map(transaction => {
-                        const refTpe = decrypt(listTransaction[0].tpe);
+                        
+                        const refTpe = decrypt(transaction.tpe);
+                        console.log('refTpe', refTpe);
                         const nomDuCommercant = commercants.find(element => {
-                            return element.tpe = refTpe;
+                            return element.tpe == refTpe;
                         })
 
                         return {
