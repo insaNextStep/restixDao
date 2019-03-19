@@ -116,6 +116,7 @@ router.get('/transactions/:employeId', (req, res, next) => {
 })
 
 router.post("/add", (req, res, next) => {
+    console.log('req.body', req.body);
     Entreprise.findOne({
             nomEntreprise: req.body.entreprise
         })
@@ -130,10 +131,12 @@ router.post("/add", (req, res, next) => {
                     email: req.body.email,
                     password: hash
                 });
+                console.log('employeData :', employeData);
 
                 employeData
                     .save()
                     .then(resultat => {
+                        console.log('resultat :', resultat);
                         entreprise.employes.push(resultat._id);
                         entreprise.save().then(res => {
                             res.status(201).json(resultat);
@@ -284,7 +287,9 @@ router.get("/:employeId", (req, res, next) => {
 });
 
 router.get("/dissocierEmploye/:employeId", (req, res, next) => {
+    console.log('dissocier :' ,  req.body);
     const employeId = req.params.employeId;
+    console.log('id', employeId);
     Employe.findById({
             _id: employeId
         })
@@ -295,19 +300,21 @@ router.get("/dissocierEmploye/:employeId", (req, res, next) => {
                     _id: entrepriseId
                 })
                 .then(entrepriseData => {
+                    console.log('entrepriseData', entrepriseData);
                     // rechercher l'id dans la table d'employés dans compagnie
                     entrepriseData.employes.splice(
-                        entrepriseData.employes.indexOf(this.employeId),
+                        entrepriseData.employes.indexOf(employeId),
                         1
                     );
+                    console.log('entrepriseData', entrepriseData);
                     entrepriseData.save(err => {
-                        console.log("3e étape");
                         if (err) return handleError(err);
+                        console.log("3e étape");
+                        res.status(200).json({
+                            message: "L'objet \"" + employeId + '" a été retier de l\'entreprise'
+                        });                        
                     });
                     // entrepriseData.save().then(res => console.log('mise à jour entreprise OK'));
-                    res.status(200).json({
-                        message: "L'objet \"" + employeId + '" a été retier de l\'entreprise'
-                    });
                 })
                 .catch(err => {
                     console.log('Erreur : ' + err);

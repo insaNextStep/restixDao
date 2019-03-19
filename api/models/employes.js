@@ -50,6 +50,7 @@ const employeSchema = new mongoose.Schema({
     dateDernierDebit: {
         type: Date,
         required: true,
+        default: new Date(Date.now())
     },
     role: {
         type: String,

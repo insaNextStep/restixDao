@@ -38,7 +38,8 @@ router.post("/loginEntreprise", (req, res, next) => {
                 if (resultat) {
                     const payload = {
                         subject: user._id,
-                        role: user.role
+                        role: user.role,
+                        nomEntreprise: user.nomEntreprise
                     };
                     // const payload = {
                     //     subject: user._id
