@@ -77,6 +77,7 @@ router.post('/', (req, res, next) => {
     // séparation de l'information contenue dans le champs tpe
     const tpeSelect = req.body.tpe.split(' - ');
     let idTransaction = '';
+    console.log('info', req.body);
 
     // récupération du moment de la transactions
     const d = new Date(Date.now());
