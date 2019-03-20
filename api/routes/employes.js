@@ -195,9 +195,11 @@ router.get('/solde/:employeId', (req, res, next) => {
     Employe.findById({
             _id: id
         })
-        .select({soldeTotal: 1, soldeJour: 1})
+        .select({soldeTotal: 1, soldeJour: 1, dateDernierDebit: 1 })
         .then(employeData => {
-            let dateDernierDebit = data.dateDernierDebit;
+            console.log('employeData', employeData);
+            let dateDernierDebit = employeData.dateDernierDebit;
+            const d = new Date(Date.now());
             if (!dateDernierDebit) {
                 dateDernierDebit = new Date(Date.now());
                 dateDernierDebit.setDate(dateDernierDebit.getDate() - 1);
@@ -212,7 +214,7 @@ router.get('/solde/:employeId', (req, res, next) => {
                 }
                 employeData.soldeJour = employeData.soldeTotal;
                 if (employeData.soldeTotal >= 20) {
-                    employeData.soldeJour = 20;
+                    employeData.soldeJour = 21;
                 }
                 const newUser = employeData;
                 newUser.save().then(res => {
