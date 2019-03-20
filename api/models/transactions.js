@@ -13,13 +13,11 @@ var schemaOptions = {
 const transactionSchema = new mongoose.Schema({
     tpe: {},
     iban:{
-      type: String,
-      required: true
+      type: String
     },
     restix: {},
     date: {
-        type: Date,
-        required: true,
+        type: Date
     },
     formatDate: {},
     montant: {},
