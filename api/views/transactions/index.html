@@ -14,9 +14,14 @@
                 <label for="restix">Numero de carte</label>
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"></span>
-                    <input id="login-restix" type="number" class="form-control" name="restix" value="{{transaction.restix}}"
-                        title="Numéro à 16 chiffre" placeholder="RESTIX" required minlength="16" maxlength="16">
+                    <input id="login-montant" type="number" class="form-control"  name="montant" value="{{transaction.restix}}" 
+                        inputmode="numeric" placeholder="1234567890123456" pattern="[0-9]{16,16}" required>
                 </div>
+                <!--div style="margin-bottom: 25px" class="input-group">
+                    <span class="input-group-addon"></span>
+                    <input id="login-restix" type="number" class="form-control" name="restix" value="{{transaction.restix}}"
+                        placeholder="RESTIX" pattern="[0-9]{16}" required >
+                </div-->
 
                 <label for="tpe">Choix commerçant enregistré</label>
                 <div style="margin-bottom: 25px" class="input-group">
@@ -31,8 +36,8 @@
                 <label for="codepin">code à 4 chiffres</label>
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"></span>
-                    <input id="login-password" type="password"  class="form-control" name="codepin"
-                        value="{{transaction.codepin}}" inputmode="numeric" placeholder="****"  pattern="[0-9][0-9][0-9][0-9]" required minlength="16">
+                    <input id="login-password" type="password"  class="form-control" name="codepin" value="{{transaction.codepin}}"
+                         inputmode="numeric" placeholder="****"  pattern="[0-9]{4,4}" required >
                 </div>
 
                 <label for="montant">Montant entre 1,00€ et 21,00€</label>
