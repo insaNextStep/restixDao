@@ -12,9 +12,7 @@ var schemaOptions = {
 
 const transactionSchema = new mongoose.Schema({
     tpe: {},
-    iban:{
-      type: String
-    },
+    iban:{},
     restix: {},
     date: {
         type: Date
