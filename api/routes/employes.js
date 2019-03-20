@@ -197,6 +197,28 @@ router.get('/solde/:employeId', (req, res, next) => {
         })
         .select({soldeTotal: 1, soldeJour: 1})
         .then(employeData => {
+            let dateDernierDebit = data.dateDernierDebit;
+            if (!dateDernierDebit) {
+                dateDernierDebit = new Date(Date.now());
+                dateDernierDebit.setDate(dateDernierDebit.getDate() - 1);
+            }
+            // controle de la date de la derniere transactions, si antérieur réinitialisation du solde du jour
+            if ((dateDernierDebit.getDate() !== d.getDate()) || !dateDernierDebit) {
+                // initialisation du compte du jour
+                // employe.soldeJour = 20;
+                console.log('\n\n\n *************************** info hier :')
+                if (!employeData.soldeTotal) {
+                    employeData.soldeTotal = 0;
+                }
+                employeData.soldeJour = employeData.soldeTotal;
+                if (employeData.soldeTotal >= 20) {
+                    employeData.soldeJour = 20;
+                }
+                const newUser = employeData;
+                newUser.save().then(res => {
+                    console.log('solde du jour mise à jour');
+                });
+            };            
             console.log(employeData);
             res.status(200).json(employeData);
         })
@@ -221,28 +243,28 @@ router.post('/loginEmploye', (req, res, next) => {
             console.log(data);
             bcrypt.compare(logData.password, data.password, (err, resultat) => {
                 if (resultat) {
-                    let dateDernierDebit = data.dateDernierDebit;
-                    if (!dateDernierDebit) {
-                        dateDernierDebit = new Date(Date.now());
-                        dateDernierDebit.setDate(dateDernierDebit.getDate() - 1);
-                    }
-                    // controle de la date de la derniere transactions, si antérieur réinitialisation du solde du jour
-                    if ((dateDernierDebit.getDate() !== d.getDate()) || !dateDernierDebit) {
-                        // initialisation du compte du jour
-                        // employe.soldeJour = 20;
-                        console.log('\n\n\n *************************** info hier :')
-                        if (!data.soldeTotal) {
-                            data.soldeTotal = 0;
-                        }
-                        data.soldeJour = data.soldeTotal;
-                        if (data.soldeTotal >= 20) {
-                            data.soldeJour = 20;
-                        }
-                        const newUser = data;
-                        newUser.save().then(res => {
-                            console.log('solde du jour mise à jour');
-                        });
-                    };
+                    // let dateDernierDebit = data.dateDernierDebit;
+                    // if (!dateDernierDebit) {
+                    //     dateDernierDebit = new Date(Date.now());
+                    //     dateDernierDebit.setDate(dateDernierDebit.getDate() - 1);
+                    // }
+                    // // controle de la date de la derniere transactions, si antérieur réinitialisation du solde du jour
+                    // if ((dateDernierDebit.getDate() !== d.getDate()) || !dateDernierDebit) {
+                    //     // initialisation du compte du jour
+                    //     // employe.soldeJour = 20;
+                    //     console.log('\n\n\n *************************** info hier :')
+                    //     if (!data.soldeTotal) {
+                    //         data.soldeTotal = 0;
+                    //     }
+                    //     data.soldeJour = data.soldeTotal;
+                    //     if (data.soldeTotal >= 20) {
+                    //         data.soldeJour = 20;
+                    //     }
+                    //     const newUser = data;
+                    //     newUser.save().then(res => {
+                    //         console.log('solde du jour mise à jour');
+                    //     });
+                    // };
                     const payload = {
                         subject: data._id,
                         nom: data.nom,

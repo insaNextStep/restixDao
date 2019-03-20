@@ -79,6 +79,8 @@ router.post('/', (req, res, next) => {
     let idTransaction = '';
     console.log('info', req.body);
 
+    // return false;
+
     // récupération du moment de la transactions
     const d = new Date(Date.now());
     const autred = d.toLocaleDateString();
@@ -132,7 +134,7 @@ router.post('/', (req, res, next) => {
                     console.log('\n\n\n ********************** 1er transaction ********************** ');
                     employe.dateDernierDebit = d;
                     employe.soldeJour = employe.soldeTotal;
-                    if (employe.soldeJour >= 20) employe.soldeJour = 20;
+                    if (employe.soldeJour >= 21) employe.soldeJour = 21;
                 }
 
                 // affectation de la date de la dernière transaction
@@ -150,8 +152,8 @@ router.post('/', (req, res, next) => {
                         // initialisation du compte du jour
                         // employe.soldeJour = 20;
                         employe.soldeJour = employe.soldeTotal;
-                        if (employe.soldeTotal >= 20) {
-                            employe.soldeJour = 20;
+                        if (employe.soldeTotal >= 21) {
+                            employe.soldeJour = 21;
                             employe.soldeJour -= depense;
                         }
                     };
