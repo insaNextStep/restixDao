@@ -11,13 +11,13 @@
 
             <form id="loginform" class="form-horizontal" role="form" method="POST">
 
+                <label for="tpe">Numéro RESTIX</label>
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"></span>
-                    <input id="login-restix" type="number" class="form-control" name="restix" value="{{transaction.restix}}"
-                        placeholder="RESTIX" pattern="[0-9]{16}" required >
-                </div
+                    <input type="text" class="form-control" name="restix" pattern="[1-9][0-9]{15}"
+                    inputmode="numeric" required value="{{transaction.restix}}">
 
-                <label for="tpe">Choix commerçant enregistré</label>
+                </div <label for="tpe">Choix commerçant enregistré</label>
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"></span>
                     <select class="form-control" id="tpe" name="tpe">
@@ -30,8 +30,8 @@
                 <label for="codepin">code à 4 chiffres</label>
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"></span>
-                    <input id="login-password" type="password"  class="form-control" name="codepin" value="{{transaction.codepin}}"
-                         inputmode="numeric" placeholder="****"  pattern="[0-9]{4,4}" required >
+                    <input id="login-password" type="password" class="form-control" name="codepin" value="{{transaction.codepin}}"
+                        inputmode="numeric" placeholder="****" pattern="[0-9]{4,4}" required>
                 </div>
 
                 <label for="montant">Montant entre 1,00€ et 21,00€</label>
