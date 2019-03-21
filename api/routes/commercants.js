@@ -52,7 +52,7 @@ router.get('/list', (req, res, next) => {
 });
 
 router.post('/add', (req, res, next) => {
-    password = 'insa'
+    password = req.body.password;
     bcrypt.hash(password, saltRounds, (err, hash) => {
         var commercantData = new Commercant({
             _id: new mongoose.Types.ObjectId(),
