@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.001.001.02">
+    <CstmrCdtTrfInitn>
+        <PmtInf> //Informations de paiement 
+            <PmtInfId>_id</PmtInfId> //Réference de la transa 
+            <PmtMtd>TRF</PmtMtd> //Méthode de paiement 
+            <ReqdExctnDt>AAAA-MM-JJ</ReqdExctnDt> //Date de la requete 
+            <Dbtr> //Débiteur 
+                <Nm>AVENTIX</Nm>
+            </Dbtr>
+            <DbtrAcct>
+                <Id>
+                    <IBAN>FRXXXXXXXXXXXXXXX</IBAN>
+                </Id>
+            </DbtrAcct>
+            <CdtTrfTxInf> //Credit Transfer Transaction Information 
+                <Amt> //Montant 
+                    <InstdAmt Ccy="EUR">XX.XX</InstdAmt> //instruction montant 
+                </Amt>
+            </CdtTrfTxInf>
+        </PmtInf>
+    </CstmrCdtTrfInitn>
+</Document> 

@@ -102,8 +102,8 @@ router.get('/transactions/:employeId', (req, res, next) => {
                     })
                 // response.sort_by(el => el.date, reverse = true);
                 // console.log(autre);
-                const tableau = reponse.sort(sortByDate);
-                console.log(tableau);
+                // const tableau = reponse.sort(sortByDate);
+                // console.log(tableau);
                 res.status(200).json(tableau);
             })
             .catch(err => {

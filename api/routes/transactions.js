@@ -3,6 +3,8 @@ const router = express.Router();
 const Commercant = require('../models/commercants');
 const Transaction = require('../models/transactions');
 const Employe = require("../models/employes");
+const builder = require('xmlbuilder');
+const fs = require('fs');
 
 // Nodejs encryption with CTR
 const crypto = require('crypto');
@@ -25,6 +27,70 @@ function decrypt(text) {
     var dec = decipher.update(text, 'hex', 'utf8')
     dec += decipher.final('utf8');
     return dec;
+}
+
+function transactionXml(titre, elementJson) {
+
+    dateUpdate = new Date(Date.now());
+
+    var feedObj = {
+        'Document': {
+            'title':  titre, 
+            'updated': dateUpdate.toISOString(),
+            'rights': 'Copyright (c) 2019, NextStep - AVENTIX',
+        }
+    }
+
+    // console.log(elementJson[0]);
+
+    feed = builder.create(feedObj, {
+        encoding: 'utf-8'
+    });
+
+    var obj = element => (() => {
+        // console.log(element);
+        return {
+            'CstmrCdtTrfInitn': {
+                'PmtInf': {
+                    'PmtInfId': element.id,
+                    'PmtMtd': 'TRF',
+                    'ReqdExctnDt': element.date.toISOString(),
+                    'Dbtr': {
+                        'Nm': 'AVENTIX'
+                    },
+                    'DbtrAcct': {
+                        'Id': {
+                            'IBAN': element.iban
+                        }
+                    },
+                    'CdtTrfTxInf': {
+                        'Amt': {
+                            'InstdAmt': {
+                                '@Ccy': 'EUR',
+                                '#text': parseInt(element.montant,10).toFixed(2)
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    });
+
+    elementJson.forEach(element => {
+        person = builder.create(obj(element));
+        feed.importDocument(person);
+    });
+
+    let xmlStr = feed.end({
+        pretty: true
+    });
+
+    const path = 'transaction.xml';
+
+    fs.writeFile(path, xmlStr, function (err, data) {
+        if (err) console.log(err);
+        console.log("Successfully Written to File.");
+    });
 }
 
 // async function testIban(tpe) {
@@ -267,8 +333,8 @@ router.get('/', (req, res, next) => {
 })
 
 
-router.get('/list', (req, res, next) => {
-
+router.get('/list', async (req, res, next) => {
+    console.log('\n\n *********************** transaction liste')
     Transaction.find()
         .populate('commercant')
         .populate('employe')
@@ -285,19 +351,27 @@ router.get('/list', (req, res, next) => {
                     const formatDate = decrypt(transaction.formatDate);
                     const iban = decrypt(transaction.iban);
                     const _id = transaction._id;
+                    const date = transaction.date;
                     // test si le iban existe
 
                     //const iban = (transaction.commercant && transaction.commercant !== "null" && transaction.commercant !== "undefined")?(transaction.commercant.ibanCommercant):('');
                     return {
                         montant: montant,
-                        date: formatDate,
+                        formatDate: formatDate,
+                        date: date,
+                        dateString : date.toISOString(),
                         tpe: tpe,
                         restix: restix,
                         iban: iban,
-                        _id: _id
+                        _id: _id,
+                        id: _id.toString()
                     }
                 })
-            console.log(listTransactions);
+            // console.log(listTransactions[0]);
+
+            transactionXml('Compensation adhérent AVENTIX', reponse);
+
+
             res.render('transactions/list.html', {
                 listTransactions: reponse
             });
@@ -307,6 +381,8 @@ router.get('/list', (req, res, next) => {
                 error: err
             })
         })
+
+
 })
 
 
