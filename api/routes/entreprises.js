@@ -39,6 +39,7 @@ router.post("/loginEntreprise", (req, res, next) => {
                     const payload = {
                         subject: user._id,
                         role: user.role,
+                        email: user.email,
                         nomEntreprise: user.nomEntreprise
                     };
                     // const payload = {
@@ -64,7 +65,7 @@ router.post("/loginEntreprise", (req, res, next) => {
 router.get('/mesEmployes/:entrepriseId', (req, res, next) => {
     const id = req.params.entrepriseId;
 
-    
+
     Entreprise.findById({
             _id: id
         })
@@ -226,9 +227,30 @@ router.patch('/update/:entrepriseId', (req, res, next) => {
             $set: updateOps
         })
         .update()
-        .then(result => {
-            console.log(result);
-            res.status(200).json(result);
+        .then(() => {
+            Entreprise.findById({_id: id})
+                .then(result => {
+                    // localStorage.removeItem('currentUser');
+                    const payload = {
+                        subject: result._id,
+                        role: result.role,
+                        email: result.email,
+                        nomEntreprise: result.nomEntreprise
+                    };
+
+                    console.log(payload);
+                    // const payload = {
+                    //     subject: result._id
+                    // };
+                    const role = result.role;
+                    const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+
+        
+                    res.status(200).send({
+                        token,
+                        role
+                    });
+                });
         })
         .catch(err => {
             console.log(err);

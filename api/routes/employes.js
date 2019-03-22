@@ -104,7 +104,7 @@ router.get('/transactions/:employeId', (req, res, next) => {
                 // console.log(autre);
                 // const tableau = reponse.sort(sortByDate);
                 // console.log(tableau);
-                res.status(200).json(tableau);
+                res.status(200).json(reponse);
             })
             .catch(err => {
                 console.log('err : ' + err)
@@ -365,11 +365,33 @@ router.patch("/update/:employeId", (req, res, next) => {
         }, {
             $set: updateOps
         })
-        .then(result => {
-            console.log('update Ok');
-            res.status(200).json({
-                message: 'Mise à jour terminée'
-            });
+        .then(() => {
+            console.log('\n\n ************************  update employe  ');
+            Employe.findById({_id: id})
+            .then(result => {
+                    console.log('nom entreprise', result);
+                    // localStorage.removeItem('currentUser');
+                    const payload = {
+                        subject: result._id,
+                        nom: result.nom,
+                        restix: result.restix,
+                        prenom: result.prenom,
+                        email: result.email,
+                        role: result.role
+                    };
+
+                    console.log(payload);
+                    // const payload = {
+                    //     subject: result._id
+                    // };
+                    const role = result.role;
+                    const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+
+                    res.status(200).send({
+                        token,
+                        role
+                    });
+                });
         })
         .catch(err => {
             console.log(err);

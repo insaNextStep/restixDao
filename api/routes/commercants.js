@@ -53,6 +53,7 @@ router.get('/list', (req, res, next) => {
 
 router.post('/add', (req, res, next) => {
     password = req.body.password;
+    console.log('body', req.body);
     bcrypt.hash(password, saltRounds, (err, hash) => {
         var commercantData = new Commercant({
             _id: new mongoose.Types.ObjectId(),
@@ -155,10 +156,24 @@ router.patch('/update/:commercantId', (req, res, next) => {
             $set: updateOps
         })
         .update()
-        .then(result => {
-            console.log(result);
-            res.status(200).json(result);
-        })
+        .then(
+            Commercant.findById({_id: id}).then(data => {
+                const payload = {
+                    subject: data._id,
+                    nomCommercant: data.nomCommercant,
+                    prenom: data.prenom,
+                    email: data.email,
+                    role: data.role
+                };
+                // Header: { "alg": "HS256", "typ": "JWT" }                
+                const role = data.role;
+                const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                res.status(200).send({
+                    token,
+                    role
+                });
+            })
+        )
         .catch(err => {
             console.log(err);
             res.status(500).json({
