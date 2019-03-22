@@ -26,20 +26,67 @@ function decrypt(text) {
     return dec;
 }
 
+router.get('/getAll', (req, res, next) => {
+    var email = [];
+    var tpe = [];
+    var iban = [];
+    var siret = [];
+    Commercant.find()
+        .then(listCommercant => {
+            // listTransaction = commercant.transactions;
+            listCommercant.map(data => {
+                email.push(data.email)
+            });
+            listCommercant.map(data => {
+                tpe.push(data.tpe)
+            });
+            listCommercant.map(data => {
+                siret.push(data.siretCommercant)
+            });
+            listCommercant.map(data => {
+                iban.push(data.ibanCommercant)
+            });
+            console.log({
+                email: email,
+                tpe: tpe,
+                siret: siret,
+                iban: iban
+            });
+            res.status(200).json({
+                email: email,
+                tpe: tpe,
+                siret: siret,
+                iban: iban
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+})
+
 router.get('/list', (req, res, next) => {
     Commercant.find()
+        .select({
+            email: 1,
+            tpe: 1,
+            ibanCommercant: 1,
+            siretCommercant: 1
+        })
         .exec()
         .then(listCommercant => {
-            //             console.log(chopHouses);
-            //             const reponse = {
-            //                 "Nombre de clients": chopHouses.length,
-            //                 Utilisateur: chopHouses.map(chopHouse => {
-            //                     return {
-            //                         chopHouseName: chopHouse.chopHouseName,
-            //                         url: 'http://localhost:3000/chopHouses/' + chopHouse._id
-            //                     };
-            //                 })
-            //             };
+            // console.log(chopHouses);
+            // const reponse = {
+            //     "Nombre de clients": chopHouses.length,
+            //     Utilisateur: chopHouses.map(chopHouse => {
+            //         return {
+            //             chopHouseName: chopHouse.chopHouseName,
+            //             url: 'http://localhost:3000/chopHouses/' + chopHouse._id
+            //         };
+            //     })
+            // };
             // console.log(listCommercant);
             res.status(200).json(listCommercant);
         })
@@ -69,8 +116,20 @@ router.post('/add', (req, res, next) => {
         commercantData
             .save()
             .then(resultat => {
-                console.log(resultat);
-                res.status(201).json(resultat);
+                const payload = {
+                    subject: resultat._id,
+                    nomCommercant: resultat.nomCommercant,
+                    prenom: resultat.prenom,
+                    email: resultat.email,
+                    role: resultat.role
+                };
+                // Header: { "alg": "HS256", "typ": "JWT" }                
+                const role = resultat.role;
+                const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                res.status(200).send({
+                    token,
+                    role
+                });
             })
             .catch(err => {
                 console.log(err);
@@ -157,7 +216,9 @@ router.patch('/update/:commercantId', (req, res, next) => {
         })
         .update()
         .then(
-            Commercant.findById({_id: id}).then(data => {
+            Commercant.findById({
+                _id: id
+            }).then(data => {
                 const payload = {
                     subject: data._id,
                     nomCommercant: data.nomCommercant,
@@ -211,8 +272,10 @@ router.post("/loginCommercant", (req, res, next) => {
                 } else {
                     res.status(500).send("Invalide Password");
                 }
-                if(err) {
-                    console.log({erreur:  err});
+                if (err) {
+                    console.log({
+                        erreur: err
+                    });
                 }
             })
         })

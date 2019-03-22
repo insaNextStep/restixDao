@@ -24,6 +24,34 @@ router.get('/list', (req, res, next) => {
         });
 });
 
+router.get('/getAll', (req, res, next) => {
+    var email = [];
+    var tpe = [];
+    var iban = [];
+    var siret = [];
+    Entreprise.find()
+        .then(listeEntreprise => {
+            // listTransaction = commercant.transactions;
+            listeEntreprise.map(data => {
+                email.push(data.email)
+            });
+            listeEntreprise.map(data => {
+                siret.push(data.siretEntreprise)
+            });
+            listeEntreprise.map(data => {
+                iban.push(data.ibanEntreprise)
+            });
+            console.log({email: email, siret: siret, iban: iban});
+            res.status(200).json({email: email, siret: siret, iban: iban});
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+})
+
 router.post("/loginEntreprise", (req, res, next) => {
     console.log('\n\n ************************** loginEntreprise');
     const logData = req.body;
@@ -120,7 +148,7 @@ router.get('/name/:entrepriseId', (req, res, next) => {
 });
 
 router.post('/add', (req, res, next) => {
-    password = 'insa'
+    password = req.body.password;
     bcrypt.hash(password, saltRounds, (err, hash) => {
         var entrepriseData = new Entreprise({
             nomEntreprise: req.body.nomEntreprise,
@@ -133,8 +161,21 @@ router.post('/add', (req, res, next) => {
         entrepriseData
             .save()
             .then(resultat => {
-                console.log(resultat);
-                res.status(201).json(resultat);
+                const payload = {
+                    subject: resultat._id,
+                    role: resultat.role,
+                    email: resultat.email,
+                    nomEntreprise: resultat.nomEntreprise
+                };
+                // const payload = {
+                //     subject: resultat._id
+                // };
+                const role = resultat.role;
+                const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                res.status(200).send({
+                    token,
+                    role
+                });
             })
             .catch(err => {
                 console.log(err);
