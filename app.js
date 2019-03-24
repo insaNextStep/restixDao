@@ -58,6 +58,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+// app.use('/static', express.static(__dirname, 'files'));
+// app.use('/static', express.static(path.join(__dirname, 'public')));
 
 // initialisation des routes
 //1er argurment indique le chemin URL /  le second indique le fichier js à utilisé ./api/routes.products.js

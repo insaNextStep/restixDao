@@ -17,7 +17,7 @@ algorithm = 'seed-ofb',
     p3s6v9y$B&E)H@McQfTjWnZr4t7w!z%C`;
 
 
-    function encrypt(text) {
+function encrypt(text) {
     var cipher = crypto.createCipher(algorithm, password, )
     var crypted = cipher.update(text, 'utf8', 'hex')
     crypted += cipher.final('hex');
@@ -31,13 +31,17 @@ function decrypt(text) {
     return dec;
 }
 
+function message(){
+    alert("Hellow World");
+}
+
 function transactionXml(titre, elementJson) {
     var filePath = process.cwd();
     dateUpdate = new Date(Date.now());
 
     var feedObj = {
         'Document': {
-            'title':  titre, 
+            'title': titre,
             'updated': dateUpdate.toISOString(),
             'rights': 'Copyright (c) 2019, NextStep - AVENTIX',
         }
@@ -69,7 +73,7 @@ function transactionXml(titre, elementJson) {
                         'Amt': {
                             'InstdAmt': {
                                 '@Ccy': 'EUR',
-                                '#text': parseInt(element.montant,10).toFixed(2)
+                                '#text': parseInt(element.montant, 10).toFixed(2)
                             }
                         }
                     }
@@ -95,9 +99,58 @@ function transactionXml(titre, elementJson) {
         console.log("Successfully Written to File.");
     });
 
-    console.log(currentPath());
-    res.download(filePath, fileName);
+    // console.log(currentPath());
+    // res.download(fileName);
 }
+
+router.get('/list/xml', (req, res, next) => {
+    Transaction.find()
+        .populate('commercant')
+        .populate('employe')
+        .sort({
+            date: -1
+        })
+        .exec()
+        .then(listTransactions => {
+            const reponse =
+                listTransactions.map(transaction => {
+                    const restix = decrypt(transaction.restix);
+                    const tpe = decrypt(transaction.tpe);
+                    const montant = decrypt(transaction.montant);
+                    const formatDate = decrypt(transaction.formatDate);
+                    const iban = decrypt(transaction.iban);
+                    const _id = transaction._id;
+                    const date = transaction.date;
+                    // test si le iban existe
+
+                    //const iban = (transaction.commercant && transaction.commercant !== "null" && transaction.commercant !== "undefined")?(transaction.commercant.ibanCommercant):('');
+                    return {
+                        montant: montant,
+                        formatDate: formatDate,
+                        date: date,
+                        dateString: date.toISOString(),
+                        tpe: tpe,
+                        restix: restix,
+                        iban: iban,
+                        _id: _id,
+                        id: _id.toString()
+                    }
+                })
+            // console.log(listTransactions[0]);
+
+            transactionXml('Compensation adhérent AVENTIX', reponse);
+
+
+            res.redirect('back');
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
+        })
+
+    
+})
 
 router.post('/', (req, res, next) => {
 
@@ -320,7 +373,7 @@ router.get('/list', async (req, res, next) => {
                         montant: montant,
                         formatDate: formatDate,
                         date: date,
-                        dateString : date.toISOString(),
+                        dateString: date.toISOString(),
                         tpe: tpe,
                         restix: restix,
                         iban: iban,
@@ -328,9 +381,9 @@ router.get('/list', async (req, res, next) => {
                         id: _id.toString()
                     }
                 })
-            console.log(listTransactions[0]);
+            // console.log(listTransactions[0]);
 
-            transactionXml('Compensation adhérent AVENTIX', reponse);
+            // transactionXml('Compensation adhérent AVENTIX', reponse);
 
 
             res.render('transactions/list.html', {
@@ -345,6 +398,7 @@ router.get('/list', async (req, res, next) => {
 
 
 })
+
 
 
 module.exports = router;
