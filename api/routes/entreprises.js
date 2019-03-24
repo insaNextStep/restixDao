@@ -26,7 +26,6 @@ router.get('/list', (req, res, next) => {
 
 router.get('/getAll', (req, res, next) => {
     var email = [];
-    var tpe = [];
     var iban = [];
     var siret = [];
     Entreprise.find()

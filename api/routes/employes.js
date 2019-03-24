@@ -41,6 +41,25 @@ function listCommercant() {
         .then(res => res);
 }
 
+router.get('/getAll', (req, res, next) => {
+    var email = [];
+    Entreprise.find()
+        .then(listeEntreprise => {
+            // listTransaction = commercant.transactions;
+            listeEntreprise.map(data => {
+                email.push(data.email)
+            });
+            console.log({email: email});
+            res.status(200).json({email: email});
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+})
+
 router.get("/list", (req, res, next) => {
     Employe.find({
             creditCard: {

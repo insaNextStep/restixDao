@@ -8,6 +8,7 @@ const fs = require('fs');
 
 // Nodejs encryption with CTR
 const crypto = require('crypto');
+
 algorithm = 'seed-ofb',
     password = `KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZ
     *G-KaPdSgVkYp3s5v8y/B?E(H+MbQeTh
@@ -15,7 +16,8 @@ algorithm = 'seed-ofb',
     6w9z$C&F)J@NcRfUjXn2r5u7x!A%D*G-
     p3s6v9y$B&E)H@McQfTjWnZr4t7w!z%C`;
 
-function encrypt(text) {
+
+    function encrypt(text) {
     var cipher = crypto.createCipher(algorithm, password, )
     var crypted = cipher.update(text, 'utf8', 'hex')
     crypted += cipher.final('hex');
@@ -30,7 +32,7 @@ function decrypt(text) {
 }
 
 function transactionXml(titre, elementJson) {
-
+    var filePath = process.cwd();
     dateUpdate = new Date(Date.now());
 
     var feedObj = {
@@ -85,58 +87,17 @@ function transactionXml(titre, elementJson) {
         pretty: true
     });
 
-    const path = 'transaction.xml';
+    const fileName = 'transaction.xml';
+    const path = filePath + '\\' + fileName;
 
     fs.writeFile(path, xmlStr, function (err, data) {
         if (err) console.log(err);
         console.log("Successfully Written to File.");
     });
 
-    console.log('var currentPath', process.cwd());
+    console.log(currentPath());
+    res.download(filePath, fileName);
 }
-
-// async function testIban(tpe) {
-//     return Commercant.findOne({
-//         tpe: tpe
-//     }).then(res => res.ibanCommercant);
-// }
-
-// const debitEmploye = (id, montant, refTransaction) => {
-//     console.log('debitEmploye');
-//     Employe.findById({
-//             _id: id
-//         })
-//         .exec()
-//         .then(employe => {
-//             employe.transactions.push(refTransaction);
-//             employe.soldeTotal -= montant;
-//             employe.soldeJour -= montant;
-//             employe.save(err => {
-//                 if (err) return handleError(err);
-//                 console.log(`employe ${employeSave.nom}, a été débit de ${depense}`)
-//             })
-//         })
-// }
-
-
-// async function saveTransaction(transaction) {
-//     transaction.save()
-//         .then(data => {
-//             message.info = 'transfert effetué';
-//             return {
-//                 message: message,
-//                 status: 'success'
-//             };
-//         })
-//         .catch(err => {
-//             message.info = 'transfert non effectué';
-//             return {
-//                 message: message,
-//                 status: 'alert'
-//             };
-//             // res.redirect('transactions');
-//         })
-// }
 
 router.post('/', (req, res, next) => {
 
@@ -306,8 +267,6 @@ router.post('/', (req, res, next) => {
     });
 
 });
-
-
 
 router.get('/', (req, res, next) => {
     console.log('\n\n *********************** transaction fonction get')
