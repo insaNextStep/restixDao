@@ -1,8 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Document>
   <title>Compensation adhérent AVENTIX</title>
-  <updated>2019-03-24T04:23:02.731Z</updated>
+  <updated>2019-03-24T20:41:33.065Z</updated>
   <rights>Copyright (c) 2019, NextStep - AVENTIX</rights>
+  <CstmrCdtTrfInitn>
+    <PmtInf>
+      <PmtInfId>5c97d61f935ea0000481c05c</PmtInfId>
+      <PmtMtd>TRF</PmtMtd>
+      <ReqdExctnDt>2019-03-24T19:10:23.413Z</ReqdExctnDt>
+      <Dbtr>
+        <Nm>AVENTIX</Nm>
+      </Dbtr>
+      <DbtrAcct>
+        <Id>
+          <IBAN>22563015453</IBAN>
+        </Id>
+      </DbtrAcct>
+      <CdtTrfTxInf>
+        <Amt>
+          <InstdAmt Ccy="EUR">8.00</InstdAmt>
+        </Amt>
+      </CdtTrfTxInf>
+    </PmtInf>
+  </CstmrCdtTrfInitn>
+  <CstmrCdtTrfInitn>
+    <PmtInf>
+      <PmtInfId>5c97d60e935ea0000481c05b</PmtInfId>
+      <PmtMtd>TRF</PmtMtd>
+      <ReqdExctnDt>2019-03-24T19:10:06.029Z</ReqdExctnDt>
+      <Dbtr>
+        <Nm>AVENTIX</Nm>
+      </Dbtr>
+      <DbtrAcct>
+        <Id>
+          <IBAN>22563015453</IBAN>
+        </Id>
+      </DbtrAcct>
+      <CdtTrfTxInf>
+        <Amt>
+          <InstdAmt Ccy="EUR">4.00</InstdAmt>
+        </Amt>
+      </CdtTrfTxInf>
+    </PmtInf>
+  </CstmrCdtTrfInitn>
+  <CstmrCdtTrfInitn>
+    <PmtInf>
+      <PmtInfId>5c97d555935ea0000481c059</PmtInfId>
+      <PmtMtd>TRF</PmtMtd>
+      <ReqdExctnDt>2019-03-24T19:07:01.678Z</ReqdExctnDt>
+      <Dbtr>
+        <Nm>AVENTIX</Nm>
+      </Dbtr>
+      <DbtrAcct>
+        <Id>
+          <IBAN>22563015453</IBAN>
+        </Id>
+      </DbtrAcct>
+      <CdtTrfTxInf>
+        <Amt>
+          <InstdAmt Ccy="EUR">4.00</InstdAmt>
+        </Amt>
+      </CdtTrfTxInf>
+    </PmtInf>
+  </CstmrCdtTrfInitn>
+  <CstmrCdtTrfInitn>
+    <PmtInf>
+      <PmtInfId>5c97d523935ea0000481c057</PmtInfId>
+      <PmtMtd>TRF</PmtMtd>
+      <ReqdExctnDt>2019-03-24T19:06:11.183Z</ReqdExctnDt>
+      <Dbtr>
+        <Nm>AVENTIX</Nm>
+      </Dbtr>
+      <DbtrAcct>
+        <Id>
+          <IBAN>22563015453</IBAN>
+        </Id>
+      </DbtrAcct>
+      <CdtTrfTxInf>
+        <Amt>
+          <InstdAmt Ccy="EUR">1.00</InstdAmt>
+        </Amt>
+      </CdtTrfTxInf>
+    </PmtInf>
+  </CstmrCdtTrfInitn>
   <CstmrCdtTrfInitn>
     <PmtInf>
       <PmtInfId>5c926853293a78105c548545</PmtInfId>
