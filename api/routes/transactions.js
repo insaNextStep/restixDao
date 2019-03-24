@@ -91,6 +91,8 @@ function transactionXml(titre, elementJson) {
         if (err) console.log(err);
         console.log("Successfully Written to File.");
     });
+
+    console.log('var currentPath', process.cwd());
 }
 
 // async function testIban(tpe) {
@@ -174,7 +176,7 @@ router.post('/', (req, res, next) => {
         montant: montant,
         tpe: tpe,
     });
-    console.log(transactionData);
+    // console.log(transactionData);
 
     // initialisation du message pour la console
     message = {
@@ -367,7 +369,7 @@ router.get('/list', async (req, res, next) => {
                         id: _id.toString()
                     }
                 })
-            // console.log(listTransactions[0]);
+            console.log(listTransactions[0]);
 
             transactionXml('Compensation adhérent AVENTIX', reponse);
 
