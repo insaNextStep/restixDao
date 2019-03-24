@@ -161,21 +161,21 @@ router.post('/add', (req, res, next) => {
         entrepriseData
             .save()
             .then(resultat => {
-                const payload = {
-                    subject: resultat._id,
-                    role: resultat.role,
-                    email: resultat.email,
-                    nomEntreprise: resultat.nomEntreprise
-                };
                 // const payload = {
-                //     subject: resultat._id
+                //     subject: resultat._id,
+                //     role: resultat.role,
+                //     email: resultat.email,
+                //     nomEntreprise: resultat.nomEntreprise
                 // };
-                const role = resultat.role;
-                const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
-                res.status(200).send({
-                    token,
-                    role
-                });
+                // // const payload = {
+                // //     subject: resultat._id
+                // // };
+                // const role = resultat.role;
+                // const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                res.status(200).send(resultat);
+                //     token,
+                //     role
+                // });
             })
             .catch(err => {
                 console.log(err);

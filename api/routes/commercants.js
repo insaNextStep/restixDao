@@ -99,6 +99,7 @@ router.get('/list', (req, res, next) => {
 });
 
 router.post('/add', (req, res, next) => {
+    console.log('\n\n', req.body);
     password = req.body.password;
     console.log('body', req.body);
     bcrypt.hash(password, saltRounds, (err, hash) => {
@@ -116,20 +117,17 @@ router.post('/add', (req, res, next) => {
         commercantData
             .save()
             .then(resultat => {
-                const payload = {
-                    subject: resultat._id,
-                    nomCommercant: resultat.nomCommercant,
-                    prenom: resultat.prenom,
-                    email: resultat.email,
-                    role: resultat.role
-                };
-                // Header: { "alg": "HS256", "typ": "JWT" }                
-                const role = resultat.role;
-                const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
-                res.status(200).send({
-                    token,
-                    role
-                });
+                // const payload = {
+                //     subject: resultat._id,
+                //     nomCommercant: resultat.nomCommercant,
+                //     prenom: resultat.prenom,
+                //     email: resultat.email,
+                //     role: resultat.role
+                // };
+                // // Header: { "alg": "HS256", "typ": "JWT" }                
+                // const role = resultat.role;
+                // const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                res.status(200).send(resultat);
             })
             .catch(err => {
                 console.log(err);
