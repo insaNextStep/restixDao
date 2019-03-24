@@ -43,17 +43,17 @@ function listCommercant() {
 
 router.get('/getAll', (req, res, next) => {
     var email = [];
-    Entreprise.find()
-        .then(listeEntreprise => {
+    Employe.find()
+        .then(list => {
             // listTransaction = commercant.transactions;
-            listeEntreprise.map(data => {
+            list.map(data => {
                 email.push(data.email)
             });
-            console.log({email: email});
+            // console.log({email: email});
             res.status(200).json({email: email});
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             res.status(500).json({
                 error: err
             });
@@ -81,7 +81,7 @@ router.get("/list", (req, res, next) => {
             res.status(200).json(employesData);
         })
         .catch(err => {
-            console.log('pas de retour positif de la base de données : ' + err)
+            // console.log('pas de retour positif de la base de données : ' + err)
             res.status(500).json({
                 error: err
             });
@@ -101,12 +101,12 @@ router.get('/transactions/:employeId', (req, res, next) => {
             .populate('transactions')
             .then(employe => {
                 listTransaction = employe.transactions;
-                console.log('list Transaction ', listTransaction);
+                // console.log('list Transaction ', listTransaction);
                 const reponse =
                     listTransaction.map(transaction => {
                         
                         const refTpe = decrypt(transaction.tpe);
-                        console.log('refTpe', refTpe);
+                        // console.log('refTpe', refTpe);
                         const nomDuCommercant = commercants.find(element => {
                             return element.tpe == refTpe;
                         })
@@ -126,7 +126,7 @@ router.get('/transactions/:employeId', (req, res, next) => {
                 res.status(200).json(reponse);
             })
             .catch(err => {
-                console.log('err : ' + err)
+                // console.log('err : ' + err)
                 res.status(500).json({
                     error: err
                 });
@@ -135,7 +135,7 @@ router.get('/transactions/:employeId', (req, res, next) => {
 })
 
 router.post("/add", (req, res, next) => {
-    console.log('req.body', req.body);
+    // console.log('req.body', req.body);
     Entreprise.findOne({
             nomEntreprise: req.body.entreprise
         })
@@ -150,12 +150,12 @@ router.post("/add", (req, res, next) => {
                     email: req.body.email,
                     password: hash
                 });
-                console.log('employeData :', employeData);
+                // console.log('employeData :', employeData);
 
                 employeData
                     .save()
                     .then(resultat => {
-                        console.log('resultat :', resultat);
+                        // console.log('resultat :', resultat);
                         entreprise.employes.push(resultat._id);
                         entreprise.save().then(res => {
                             res.status(201).json(resultat);
@@ -177,7 +177,7 @@ router.get('/name/:employeId', (req, res, next) => {
         })
         .exec()
         .then(employeData => {
-            console.log(employeData.nom);
+            // console.log(employeData.nom);
             res.status(200).json(employeData.nom);
         })
         .catch(err => {
@@ -189,18 +189,18 @@ router.get('/name/:employeId', (req, res, next) => {
 
 router.get('/email/:refEmail', (req, res, next) => {
     const email = req.params.refEmail.toLowerCase();
-    console.log('node email : ' + email);
+    // console.log('node email : ' + email);
     Employe.findOne({
             email: email
         }).exec()
         .then(data => {
-            console.log('exite déjà : ' + data.email);
+            // console.log('exite déjà : ' + data.email);
             res.status(200).json({
                 message: 'err'
             });
         })
         .catch(err => {
-            console.log('nouveau login');
+            // console.log('nouveau login');
             res.status(200).json({
                 message: 'new'
             });
@@ -216,7 +216,7 @@ router.get('/solde/:employeId', (req, res, next) => {
         })
         .select({soldeTotal: 1, soldeJour: 1, dateDernierDebit: 1 })
         .then(employeData => {
-            console.log('employeData', employeData);
+            // console.log('employeData', employeData);
             let dateDernierDebit = employeData.dateDernierDebit;
             const d = new Date(Date.now());
             if (!dateDernierDebit) {
@@ -237,10 +237,10 @@ router.get('/solde/:employeId', (req, res, next) => {
                 }
                 const newUser = employeData;
                 newUser.save().then(res => {
-                    console.log('solde du jour mise à jour');
+                    // console.log('solde du jour mise à jour');
                 });
             };            
-            console.log(employeData);
+            // console.log(employeData);
             res.status(200).json(employeData);
         })
         .catch(err => {
@@ -253,15 +253,15 @@ router.get('/solde/:employeId', (req, res, next) => {
 router.post('/loginEmploye', (req, res, next) => {
     console.log('\n\n ************************** loginEmploye');
     const logData = req.body;
-    console.log(logData);
+    // console.log(logData);
     const d = new Date(Date.now());
-    console.log('date ', d);
+    // console.log('date ', d);
     Employe.findOne({
             email: logData.email.toLowerCase()
         })
         .then(data => {
             // console.log('\n\n\n *************************** mise à jour user :')
-            console.log(data);
+            // console.log(data);
             bcrypt.compare(logData.password, data.password, (err, resultat) => {
                 if (resultat) {
                     // let dateDernierDebit = data.dateDernierDebit;
@@ -307,19 +307,19 @@ router.post('/loginEmploye', (req, res, next) => {
             });
         })
         .catch(err => {
-            console.log("invalide user : " + err);
+            // console.log("invalide user : " + err);
             res.status(500).send("Invalide User : " + err);
         });
 })
 
 router.get("/:employeId", (req, res, next) => {
     var id = req.params.employeId;
-    console.log("id recu : " + id);
+    // console.log("id recu : " + id);
     Employe.findById({
             _id: id
         })
         .then(employeDate => {
-            console.log(employeDate);
+            // console.log(employeDate);
             res.status(200).json(employeDate);
         })
         .catch(err => {
@@ -330,9 +330,9 @@ router.get("/:employeId", (req, res, next) => {
 });
 
 router.get("/dissocierEmploye/:employeId", (req, res, next) => {
-    console.log('dissocier :' ,  req.body);
+    // console.log('dissocier :' ,  req.body);
     const employeId = req.params.employeId;
-    console.log('id', employeId);
+    // console.log('id', employeId);
     Employe.findById({
             _id: employeId
         })
@@ -343,16 +343,16 @@ router.get("/dissocierEmploye/:employeId", (req, res, next) => {
                     _id: entrepriseId
                 })
                 .then(entrepriseData => {
-                    console.log('entrepriseData', entrepriseData);
+                    // console.log('entrepriseData', entrepriseData);
                     // rechercher l'id dans la table d'employés dans compagnie
                     entrepriseData.employes.splice(
                         entrepriseData.employes.indexOf(employeId),
                         1
                     );
-                    console.log('entrepriseData', entrepriseData);
+                    // console.log('entrepriseData', entrepriseData);
                     entrepriseData.save(err => {
                         if (err) return handleError(err);
-                        console.log("3e étape");
+                        // console.log("3e étape");
                         res.status(200).json({
                             message: "L'objet \"" + employeId + '" a été retier de l\'entreprise'
                         });                        
@@ -360,14 +360,14 @@ router.get("/dissocierEmploye/:employeId", (req, res, next) => {
                     // entrepriseData.save().then(res => console.log('mise à jour entreprise OK'));
                 })
                 .catch(err => {
-                    console.log('Erreur : ' + err);
+                    // console.log('Erreur : ' + err);
                     res.status(500).json({
                         error: err
                     });
                 });
         })
         .catch(err => {
-            console.log('Erreur Dissociation : ' + err)
+            // console.log('Erreur Dissociation : ' + err)
             res.status(500).json({
                 error: err
             });
@@ -388,7 +388,7 @@ router.patch("/update/:employeId", (req, res, next) => {
             console.log('\n\n ************************  update employe  ');
             Employe.findById({_id: id})
             .then(result => {
-                    console.log('nom entreprise', result);
+                    // console.log('nom entreprise', result);
                     // localStorage.removeItem('currentUser');
                     const payload = {
                         subject: result._id,
@@ -399,7 +399,7 @@ router.patch("/update/:employeId", (req, res, next) => {
                         role: result.role
                     };
 
-                    console.log(payload);
+                    // console.log(payload);
                     // const payload = {
                     //     subject: result._id
                     // };
@@ -413,7 +413,7 @@ router.patch("/update/:employeId", (req, res, next) => {
                 });
         })
         .catch(err => {
-            console.log(err);
+            // console.log(err);
             res.status(500).json({
                 error: err
             });
