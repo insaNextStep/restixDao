@@ -32,15 +32,18 @@ function decrypt(text) {
     return dec;
 }
 
-function message(){
+function message() {
     alert("Hellow World");
 }
 
-function transactionXml(titre, elementJson) {
-    var filePath = process.cwd();
-    dateUpdate = new Date(Date.now());
+function transactionXml(titre, elementJson, crypte) {
 
-    const path = path.resolve(__dirname, 'files', 'transactions.xml')
+    var filePath = process.cwd() + '/files/';
+    console.log(filePath);
+    dateUpdate = new Date(Date.now());
+    const fileName = (crypte ? 'CompensationCrypte.xml' : 'CompensationDecrypte.xml');
+    const path = filePath + '/' + fileName;
+    console.log('fileName', fileName);
 
     var feedObj = {
         'Document': {
@@ -94,13 +97,12 @@ function transactionXml(titre, elementJson) {
         pretty: true
     });
 
-    // const fileName = 'transaction.xml';
-    // const path = filePath + '\\' + fileName;
+
 
     fs.writeFile(path, xmlStr, function (err, data) {
         if (err) console.log(err);
         console.log("Successfully Written to File.");
-     });
+    });
 
     // console.log(currentPath());
     // res.download(fileName);
@@ -141,7 +143,7 @@ router.get('/list/xml', (req, res, next) => {
                 })
             // console.log(listTransactions[0]);
 
-            transactionXml('Compensation adhérent AVENTIX', reponse);
+            transactionXml('Compensation adhérent AVENTIX', reponse, false);
 
 
             res.redirect('back');
@@ -152,7 +154,56 @@ router.get('/list/xml', (req, res, next) => {
             })
         })
 
-    
+
+})
+
+router.get('/list/xmlc', (req, res, next) => {
+    Transaction.find()
+        .populate('commercant')
+        .populate('employe')
+        .sort({
+            date: -1
+        })
+        .exec()
+        .then(listTransactions => {
+            const reponse =
+                listTransactions.map(transaction => {
+                    const restix = transaction.restix;
+                    const tpe = transaction.tpe;
+                    const montant = transaction.montant;
+                    const formatDate = transaction.formatDate;
+                    const iban = transaction.iban;
+                    const _id = transaction._id;
+                    const date = transaction.date;
+                    // test si le iban existe
+
+                    //const iban = (transaction.commercant && transaction.commercant !== "null" && transaction.commercant !== "undefined")?(transaction.commercant.ibanCommercant):('');
+                    return {
+                        montant: montant,
+                        formatDate: formatDate,
+                        date: date,
+                        dateString: date,
+                        tpe: tpe,
+                        restix: restix,
+                        iban: iban,
+                        _id: _id,
+                        id: _id.toString()
+                    }
+                })
+            // console.log(listTransactions[0]);
+
+            transactionXml('Compensation adhérent AVENTIX', reponse, true);
+
+
+            res.redirect('back');
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
+        })
+
+
 })
 
 router.post('/', (req, res, next) => {
