@@ -5,6 +5,7 @@ const Transaction = require('../models/transactions');
 const Employe = require("../models/employes");
 const builder = require('xmlbuilder');
 const fs = require('fs');
+const path = require('path');
 
 // Nodejs encryption with CTR
 const crypto = require('crypto');
@@ -38,6 +39,8 @@ function message(){
 function transactionXml(titre, elementJson) {
     var filePath = process.cwd();
     dateUpdate = new Date(Date.now());
+
+    const path = path.resolve(__dirname, 'files', 'transactions.xml')
 
     var feedObj = {
         'Document': {
@@ -91,13 +94,13 @@ function transactionXml(titre, elementJson) {
         pretty: true
     });
 
-    const fileName = 'transaction.xml';
-    const path = filePath + '\\' + fileName;
+    // const fileName = 'transaction.xml';
+    // const path = filePath + '\\' + fileName;
 
     fs.writeFile(path, xmlStr, function (err, data) {
         if (err) console.log(err);
         console.log("Successfully Written to File.");
-    });
+     });
 
     // console.log(currentPath());
     // res.download(fileName);

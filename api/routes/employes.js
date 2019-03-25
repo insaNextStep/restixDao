@@ -189,18 +189,19 @@ router.get('/name/:employeId', (req, res, next) => {
 
 router.get('/email/:refEmail', (req, res, next) => {
     const email = req.params.refEmail.toLowerCase();
+    console.log('email', email);
     // console.log('node email : ' + email);
     Employe.findOne({
             email: email
         }).exec()
         .then(data => {
-            // console.log('exite déjà : ' + data.email);
+            console.log('exite déjà : ' + data.email);
             res.status(200).json({
                 message: 'err'
             });
         })
         .catch(err => {
-            // console.log('nouveau login');
+            console.log('nouveau login');
             res.status(200).json({
                 message: 'new'
             });
