@@ -213,26 +213,27 @@ router.patch('/update/:commercantId', (req, res, next) => {
             $set: updateOps
         })
         .update()
-        .then(
+        .then(() => {
             Commercant.findById({
-                _id: id
-            }).then(data => {
-                const payload = {
-                    subject: data._id,
-                    nomCommercant: data.nomCommercant,
-                    prenom: data.prenom,
-                    email: data.email,
-                    role: data.role
-                };
-                // Header: { "alg": "HS256", "typ": "JWT" }                
-                const role = data.role;
-                const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
-                res.status(200).send({
-                    token,
-                    role
-                });
-            })
-        )
+                    _id: id
+                })
+                .then(data => {
+                    const payload = {
+                        subject: data._id,
+                        nomCommercant: data.nomCommercant,
+                        prenom: data.prenom,
+                        email: data.email,
+                        role: data.role
+                    };
+                    // Header: { "alg": "HS256", "typ": "JWT" }                
+                    const role = data.role;
+                    const token = jwt.sign(payload, "secreteKey"); // la clé peut être ce qu'on veut
+                    res.status(200).send({
+                        token,
+                        role
+                    });
+                })
+        })
         .catch(err => {
             console.log(err);
             res.status(500).json({
